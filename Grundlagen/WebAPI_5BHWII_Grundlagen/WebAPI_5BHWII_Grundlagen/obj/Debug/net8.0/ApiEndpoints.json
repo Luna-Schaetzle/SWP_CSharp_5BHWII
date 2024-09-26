@@ -1,0 +1,76 @@
+[
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "AddArticle",
+    "RelativePath": "api/Shop/article",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "article",
+        "Type": "Klassenbiliothek_Article.Article",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "UpdateArticle",
+    "RelativePath": "api/Shop/article",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "article",
+        "Type": "Klassenbiliothek_Article.Article",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "GetArticle",
+    "RelativePath": "api/Shop/article/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "DelArticle",
+    "RelativePath": "api/Shop/article/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "GetArticles",
+    "RelativePath": "api/Shop/articles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

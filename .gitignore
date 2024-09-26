@@ -50,3 +50,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+# Ignore Visual Studio specific folders and files
+.vs/
+

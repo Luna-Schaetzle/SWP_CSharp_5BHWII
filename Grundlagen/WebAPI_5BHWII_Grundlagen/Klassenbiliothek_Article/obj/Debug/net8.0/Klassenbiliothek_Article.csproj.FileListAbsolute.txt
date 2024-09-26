@@ -1,0 +1,12 @@
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\bin\Debug\net8.0\Klassenbiliothek_Article.deps.json
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\bin\Debug\net8.0\Klassenbiliothek_Article.dll
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\bin\Debug\net8.0\Klassenbiliothek_Article.pdb
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.AssemblyInfo.cs
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.sourcelink.json
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.dll
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\refint\Klassenbiliothek_Article.dll
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\Klassenbiliothek_Article.pdb
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\Klassenbiliothek_Article\obj\Debug\net8.0\ref\Klassenbiliothek_Article.dll

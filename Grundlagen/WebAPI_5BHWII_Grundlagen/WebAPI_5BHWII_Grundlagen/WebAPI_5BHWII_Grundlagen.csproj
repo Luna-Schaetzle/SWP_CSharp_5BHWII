@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\API_Abfrage\API_Abfrage.csproj" />
     <ProjectReference Include="..\Klassenbiliothek_Article\Klassenbiliothek_Article.csproj" />
   </ItemGroup>
 

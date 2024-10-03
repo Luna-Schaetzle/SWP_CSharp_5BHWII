@@ -105,3 +105,8 @@ C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundla
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\Klassenbiliothek_Article.dll
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\Klassenbiliothek_Article.pdb
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\API_Abfrage.deps.json
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\API_Abfrage.runtimeconfig.json
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\API_Abfrage.exe
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\API_Abfrage.dll
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\Grundlagen\WebAPI_5BHWII_Grundlagen\WebAPI_5BHWII_Grundlagen\bin\Debug\net8.0\API_Abfrage.pdb

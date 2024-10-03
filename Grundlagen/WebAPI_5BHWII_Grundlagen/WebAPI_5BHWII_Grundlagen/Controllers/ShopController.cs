@@ -39,25 +39,46 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
             this._dbManager = dbManager;
         }
 
-        [HttpGet("articles")]
-        public async Task<IActionResult> GetArticles()
+        public async Task<bool> CheckApiKey(string apiKey)
         {
-            // 1. alle Artikel aus der DB holen
-            // 2. Die Artikel nach Json umwandeln und zurückliefern
+            var user = await _dbManager.Users.FirstOrDefaultAsync(u => u.ApiKey == apiKey);
+            if(user == null){
+                return false;
+            }
+            return true;
+        }
+
+        [HttpGet("articles")] 
+        public async Task<IActionResult> GetArticles(string apiKey)
+        {   
+            // 1. API Key überprüfen
+            // 2. Wenn der API Key nicht stimmt, dann Fehlermeldung zurückgeben
+            // 3. Wenn der API Key stimmt, dann alle Artikel aus der DB holen und zurückgeben
+            // 4. Artikel in Json umwandeln und zurückgeben
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
             return new JsonResult(await _dbManager.Articles.ToListAsync());
         }
 
         [HttpGet("article/{id:int}")]
-        public async Task<IActionResult> GetArticle(int id)
+        public async Task<IActionResult> GetArticle(int id, string apiKey)
         {
             // 1. Artikel mit der ID aus der DB holen
             // 2. Artikel nach Json umwandeln und zurückliefern
+            // 3. API Key überprüfen
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
             return new JsonResult(await _dbManager.Articles.FindAsync(id));
         }
 
         //einen artikel löschen per ID
         [HttpDelete("article/{id:int}")]
-        public async Task<IActionResult> DelArticle(int id){
+        public async Task<IActionResult> DelArticle(int id, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
             var articleToDel = await _dbManager.Articles.FindAsync(id);
             var erfolg = _dbManager.Articles.Remove(articleToDel);
             await _dbManager.SaveChangesAsync();
@@ -65,7 +86,10 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
         }
         //einen neuen Artikel erzeugen 
         [HttpPost("article")]
-        public async Task<IActionResult> AddArticle(Article article){
+        public async Task<IActionResult> AddArticle(Article article, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
             var erfolg = await _dbManager.Articles.AddAsync(article);
             await _dbManager.SaveChangesAsync();
             return new JsonResult(erfolg);
@@ -73,7 +97,10 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
 
         //einen anderen Artikel ändern 
         [HttpPut("article")]
-        public async Task<IActionResult> UpdateArticle(Article article){
+        public async Task<IActionResult> UpdateArticle(Article article, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
             //var articleToUpdate = 
             var articleToUpdate = await _dbManager.Articles.FindAsync(article.ArticleId);
             articleToUpdate.Name = article.Name;

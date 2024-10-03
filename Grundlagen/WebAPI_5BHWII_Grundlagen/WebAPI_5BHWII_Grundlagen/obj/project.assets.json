@@ -961,6 +961,19 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+      "API_Abfrage/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Klassenbiliothek_Article": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/API_Abfrage.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/API_Abfrage.dll": {}
+        }
+      },
       "Klassenbiliothek_Article/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -2722,6 +2735,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "API_Abfrage/1.0.0": {
+      "type": "project",
+      "path": "../API_Abfrage/API_Abfrage.csproj",
+      "msbuildProject": "../API_Abfrage/API_Abfrage.csproj"
+    },
     "Klassenbiliothek_Article/1.0.0": {
       "type": "project",
       "path": "../Klassenbiliothek_Article/Klassenbiliothek_Article.csproj",
@@ -2730,6 +2748,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "API_Abfrage >= 1.0.0",
       "Klassenbiliothek_Article >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 8.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.8",
@@ -2770,6 +2789,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
+            "C:\\Users\\Admin\\Desktop\\5BHWII\\SWP_CSharp_5BHWII\\Grundlagen\\WebAPI_5BHWII_Grundlagen\\API_Abfrage\\API_Abfrage.csproj": {
+              "projectPath": "C:\\Users\\Admin\\Desktop\\5BHWII\\SWP_CSharp_5BHWII\\Grundlagen\\WebAPI_5BHWII_Grundlagen\\API_Abfrage\\API_Abfrage.csproj"
+            },
             "C:\\Users\\Admin\\Desktop\\5BHWII\\SWP_CSharp_5BHWII\\Grundlagen\\WebAPI_5BHWII_Grundlagen\\Klassenbiliothek_Article\\Klassenbiliothek_Article.csproj": {
               "projectPath": "C:\\Users\\Admin\\Desktop\\5BHWII\\SWP_CSharp_5BHWII\\Grundlagen\\WebAPI_5BHWII_Grundlagen\\Klassenbiliothek_Article\\Klassenbiliothek_Article.csproj"
             }

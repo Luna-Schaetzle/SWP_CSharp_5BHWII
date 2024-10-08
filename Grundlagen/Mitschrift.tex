@@ -1,0 +1,209 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{hyperref}
+
+% Titelblatt Einstellungen
+\title{
+    \vspace{2cm}
+    \Huge \textbf{APIs und Web API in ASP.NET Core}
+    \vspace{0.5cm}
+    \Large \textit{Mitschrift / Zusammenfassung}
+    \vspace{2cm}
+}
+\author{Luna Schätzle}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Was ist eine API?}
+API steht für \textit{Application Programming Interface}. Eine API ermöglicht es, dass zwei Programme miteinander kommunizieren, indem sie eine standardisierte Schnittstelle bereitstellt. Dadurch können Daten und Funktionen ausgetauscht oder genutzt werden, ohne dass die interne Implementierung offengelegt wird. Ein typisches Beispiel ist die Kommunikation zwischen einer mobilen App und einem Server.
+
+\section{Web API}
+Web-APIs werden speziell im Web verwendet, um Daten zwischen einem Server und einem Client auszutauschen. In früheren Anwendungen wurden HTML, CSS und JavaScript-Dateien komplett vom Server an den Client gesendet, was zu einem hohen Datenverkehr und langsamen Ladezeiten führte. 
+
+Web-APIs bieten eine effizientere Lösung, indem nur die tatsächlich benötigten Daten, oft im \texttt{JSON} oder \texttt{XML} Format, an den Client gesendet werden. Der Client verwendet diese Daten dann, um Inhalte dynamisch darzustellen.
+
+\section{Web API in ASP.NET}
+ASP.NET Web API ist ein Framework, das es Entwicklern ermöglicht, HTTP-Dienste zu erstellen. Diese Dienste können von unterschiedlichen Clients, wie Webbrowsern oder mobilen Geräten, verwendet werden. In unseren aktuellen Anwendungen programmieren wir das Backend, indem wir eine API schreiben, die Daten an den Client sendet. Es wird kein Frontend (HTML, CSS, JavaScript) entwickelt. Die Kommunikation erfolgt ausschließlich über HTTP.
+
+\section{HTTP-Methoden}
+HTTP-Methoden dienen der Kommunikation zwischen dem Client und dem Server. Es gibt fünf Hauptmethoden, die häufig verwendet werden:
+
+\begin{itemize}
+    \item \textbf{GET} – Fordert Daten vom Server an (z.B. um eine Liste von Artikeln zu erhalten).
+    \item \textbf{POST} – Sendet Daten an den Server (z.B. um einen neuen Artikel zu erstellen).
+    \item \textbf{PUT} – Aktualisiert vorhandene Daten auf dem Server (z.B. um einen Artikel zu bearbeiten).
+    \item \textbf{DELETE} – Löscht Daten auf dem Server (z.B. um einen Artikel zu entfernen).
+    \item \textbf{PATCH} – Ändert teilweise vorhandene Daten (z.B. um spezifische Eigenschaften eines Artikels zu aktualisieren).
+\end{itemize}
+
+\section{Middleware}
+Middleware ist eine Software, die zwischen dem Client und dem Server steht und Anfragen bearbeitet. In \texttt{ASP.NET Core} ist Middleware essenziell, da sie Anfragen filtert, verarbeitet und weiterleitet. Sie ermöglicht eine flexible Verwaltung der Kommunikation und Bearbeitung von Anfragen.
+
+\section{Swagger}
+Swagger ist ein nützliches Tool für Entwickler, um APIs zu testen, ohne eine extra Anwendung schreiben zu müssen. Es generiert eine Weboberfläche, auf der man alle Funktionen der API direkt testen kann, indem man Anfragen sendet und die Antworten überprüft. Swagger erleichtert die Dokumentation und das Testen von APIs enorm.
+
+\section{Aufbau einer API-URL}
+Eine API-URL besteht typischerweise aus mehreren Teilen: der Domain, dem Pfad und optionalen Parametern. Die Methode, die verwendet wird (GET, POST, PUT, DELETE), bestimmt, wie mit den Daten umgegangen wird. 
+
+\textbf{Beispiel:}
+
+\begin{lstlisting}[language=]
+https://api.example.com/api/shops/articles + GET
+                                 /articles/3 + GET
+                                 /articles/2 + DEL
+                                 /articles + PUT
+                                 /articles + POST
+                                 /articles?api_key=1234 + GET
+\end{lstlisting}
+
+Hier sehen wir verschiedene Anfragen, die mit einer API ausgeführt werden können. Die Domain gibt an, welcher Server kontaktiert wird, während der Pfad spezifiziert, auf welche Daten zugegriffen wird. Die HTTP-Methode bestimmt, was mit diesen Daten geschieht (Abrufen, Erstellen, Löschen, etc.).
+
+\section{Benötigte Komponenten zur Programmierung einer Web API}
+Um eine Web API zu programmieren, benötigen wir folgende Elemente:
+
+\begin{itemize}
+    \item \textbf{NuGet-Pakete}: z.B. \texttt{ASP.NET Core Web API}, \texttt{Entity Framework Core}.
+    \item Eine \textbf{Datenbank} mit Testdaten.
+    \item Eine Klasse, die die \textbf{Datenbankverbindung} herstellt (z.B. \texttt{DbManager}).
+    \item Ein \textbf{API-Controller}, der die Kommunikation mit der API steuert und Methoden zur Datenverarbeitung bereitstellt.
+\end{itemize}
+
+\section{API-Controller}
+Ein API-Controller ist eine Klasse, die die Anfragen an die API bearbeitet. Die Methoden im Controller greifen auf die Datenbank zu und führen die gewünschten Aktionen (Abruf, Update, Löschung) aus. Die Kommunikation erfolgt über HTTP-Methoden.
+
+\begin{lstlisting}[language=csharp, caption=Beispiel für einen API-Controller in C\#]
+//Alles was vor der Klasse definiert ist//
+
+//Hier wird definiert wie wir auf die Daten zugreifen also die URL unter der wir die ganze Klasse erreichen
+[Route("api/[controller]")]
+[ApiController]
+public class ShopController : ControllerBase
+{
+    //Hier wird die Datenbankverbindung hergestellt
+    private readonly DbManager _dbManager;
+
+    public ShopController(DbManager dbManager)
+    {
+        _dbManager = dbManager;
+    }
+
+    //Hier wird definiert wie wir auf die Daten zugreifen also die URL unter der wir die Methode erreichen
+    //Hier wird definiert, dass wir die Daten nur mit GET bekommen
+    //GET -> wir bekommen die Daten
+    [HttpGet("articles")]
+    public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
+    {
+        return await _dbManager.GetArticles();
+    }
+
+    //Hier können wir einen Artikel mit einer bestimmten ID bekommen
+    //durch die Geschwungene Klammern wird die ID dynamisch -> wir können jede ID eingeben
+    [HttpGet("articles/{id}")]
+    public async Task<ActionResult<Article>> GetArticle(int id)
+    {
+        return await _dbManager.GetArticle(id);
+    }
+
+    //Hier können wir einen Artikel löschen
+    //durch die Geschwungene Klammern wird die ID dynamisch -> wir können jede ID eingeben
+    [HttpDelete("articles/{id}")]
+    public async Task<ActionResult<Article>> DeleteArticle(int id)
+    {
+        var article = await _dbManager.GetArticle(id);  //Hier wird der Artikel mit der ID geholt
+        if (article == null)
+        {
+            return NotFound();
+        }
+        var ergebnis = await _dbManager.DeleteArticle(article); //Hier wird der Artikel gelöscht
+        await _dbManager.SaveChangesAsync();    //Hier wird die Änderung in der Datenbank gespeichert
+        return newJsonResult(ergebnis); //Hier wird das Ergebnis zurückgegeben -> true oder false
+    }
+    //einen neuen Artikel erzeugen
+        [HttpPost("article")]
+        public async Task<IActionResult> AddArticle(Article article, string apiKey){
+            var erfolg = await _dbManager.Articles.AddAsync(article);   //Hier wird der Artikel hinzugefügt
+            await _dbManager.SaveChangesAsync();                //Hier wird die Änderung in der Datenbank gespeichert
+            return new JsonResult(erfolg);                    //Hier wird das Ergebnis zurückgegeben -> true oder false
+        }
+
+        //einen anderen Artikel ändern
+        [HttpPut("article")]
+        public async Task<IActionResult> UpdateArticle(Article article, string apiKey){
+            var articleToUpdate = await _dbManager.Articles.FindAsync(article.ArticleId);   //Hier wird der Artikel mit der ID geholt
+            articleToUpdate.Name = article.Name;                //Hier wird der Name geändert
+            articleToUpdate.Price = article.Price;          //Hier wird der Preis geändert
+            articleToUpdate.ReleaseDate = article.ReleaseDate;      //Hier wird das Release Date geändert
+            var erfolg = _dbManager.Articles.Update(articleToUpdate);       //Hier wird der Artikel geupdatet
+            await _dbManager.SaveChangesAsync();            //Hier wird die Änderung in der Datenbank gespeichert
+            return new JsonResult(erfolg);          //Hier wird das Ergebnis zurückgegeben -> true oder false
+        }
+
+}
+\end{lstlisting}
+
+\section{API-Key}
+Ein API-Key ist ein Authentifizierungsschlüssel, der es ermöglicht, nur autorisierten Clients den Zugriff auf die API zu gestatten. Er wird häufig als Query-Parameter in der URL mitgegeben und in der API überprüft. Ein API-Key ist im Wesentlichen ein Passwort, das den Zugriff auf die Daten sicherstellt.
+
+\begin{lstlisting}[language=csharp, caption=Beispiel für einen API-Controller in C\#]
+    [HttpPost("article")]
+public async Task<IActionResult> AddArticle(Article article, string apiKey)
+{
+    if (apiKey != "1234")
+    {
+        return Unauthorized();
+    }
+    var erfolg = await _dbManager.Articles.AddAsync(article);
+    await _dbManager.SaveChangesAsync();
+    return new JsonResult(erfolg);
+}
+\end{lstlisting}
+
+\section{Client-Seite}
+Die Client-Seite ist die Anwendung, die die Daten von der API abfragt und sie anzeigt. Dies kann in verschiedenen Programmiersprachen wie \texttt{HTML}, \texttt{JavaScript} oder \texttt{C\#} geschehen. Zur Kommunikation mit der API verwenden wir in \texttt{C\#} die Klasse \texttt{HttpClient}, um HTTP-Anfragen an die API zu senden und die Antwort zu verarbeiten.
+
+\begin{lstlisting}[language=csharp, caption=Beispiel für einen API-Controller in C\#]
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+
+namespace Client
+{
+    class Program 
+    {
+        //Hier wird der HTTPClient initialisiert
+        private static HttpClient _articleClient = new HttpClient();
+
+        static async Task Main(string[] args)
+        {
+            using (var client = new HttpClient())
+            {
+                //die Base Adresse der API wird bei der Initialisierung des HTTPClient angegeben und wird bei jeder Anfrage verwendet
+                client.BaseAddress = new Uri("https://localhost:5001/");
+
+                HttpResponseMessage response = await client.GetAsync("api/shop/articles");
+                //Mit einem API Key würde die URL so aussehen: api/shop/articles?apiKey=1234
+                if (response.IsSuccessStatusCode)   //Hier wird überprüft ob die Anfrage erfolgreich war
+                {
+                    var articles = await response.Content.ReadAsAsync<IEnumerable<Article>>();  //Hier werden die Daten in eine Liste von Artikeln umgewandelt
+                    foreach (var article in articles)  //Hier werden die Daten durchgegangen
+                    {
+                        Console.WriteLine(article.Name);  //Hier wird der Name des Artikels ausgegeben
+                    }
+                }
+            }
+        }
+    }
+
+}
+\end{lstlisting}
+
+\end{document}

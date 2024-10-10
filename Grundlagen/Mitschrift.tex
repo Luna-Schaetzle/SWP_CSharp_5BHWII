@@ -8,7 +8,7 @@
 \title{
     \vspace{2cm}
     \Huge \textbf{APIs und Web API in ASP.NET Core}
-    \vspace{0.5cm}
+    \vspace{1cm}
     \Large \textit{Mitschrift / Zusammenfassung}
     \vspace{2cm}
 }
@@ -205,5 +205,73 @@ namespace Client
 
 }
 \end{lstlisting}
+
+\section{dependency injection}
+\section{Dependency Injection}
+Dependency Injection (DI) ist ein Designprinzip, das die Abhängigkeiten von Klassen verwaltet und die Erstellung und Bindung dieser Abhängigkeiten vereinfacht. In \texttt{ASP.NET Core} ist DI ein zentrales Konzept, das die Entwicklung modularer und testbarer Anwendungen unterstützt.
+
+\subsection{Vorteile der Dependency Injection}
+\begin{itemize}
+    \item \textbf{Erhöhte Testbarkeit}: Durch die Entkopplung von Abhängigkeiten können Klassen leichter isoliert und getestet werden.
+    \item \textbf{Bessere Wartbarkeit}: Änderungen an Abhängigkeiten erfordern weniger Anpassungen im Code, da die Abhängigkeiten zentral verwaltet werden.
+    \item \textbf{Flexibilität}: Abhängigkeiten können zur Laufzeit konfiguriert und ausgetauscht werden, was die Anpassung und Erweiterung der Anwendung erleichtert.
+\end{itemize}
+
+\subsection{Implementierung in ASP.NET Core}
+In \texttt{ASP.NET Core} wird DI durch den \texttt{IServiceCollection} Container unterstützt. Abhängigkeiten werden in der \texttt{Startup} Klasse konfiguriert und zur Laufzeit vom Framework injiziert.
+
+\begin{lstlisting}[language=csharp, caption=Beispiel für Dependency Injection in ASP.NET Core]
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Registrierung von DbManager als Singleton
+        services.AddSingleton<DbManager>();
+
+        // Registrierung von ShopController als Transient
+        services.AddTransient<ShopController>();
+
+        // Weitere Service-Registrierungen
+        services.AddControllers();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
+}
+\end{lstlisting}
+
+\subsection{Verwendung im Controller}
+Im \texttt{ShopController} wird die Abhängigkeit \texttt{DbManager} über den Konstruktor injiziert. Das Framework sorgt dafür, dass die Instanz von \texttt{DbManager} zur Verfügung steht, wenn der Controller erstellt wird.
+
+\begin{lstlisting}[language=csharp, caption=Beispiel für Dependency Injection im Controller]
+[Route("api/[controller]")]
+[ApiController]
+public class ShopController : ControllerBase
+{
+    private readonly DbManager _dbManager;
+
+    public ShopController(DbManager dbManager)
+    {
+        _dbManager = dbManager;
+    }
+
+    // Methoden des Controllers
+}
+\end{lstlisting}
+
+Durch die Verwendung von Dependency Injection wird der Code sauberer, modularer und leichter zu testen. Es ermöglicht eine klare Trennung der Verantwortlichkeiten und fördert die Wiederverwendbarkeit von Komponenten.
+
 
 \end{document}

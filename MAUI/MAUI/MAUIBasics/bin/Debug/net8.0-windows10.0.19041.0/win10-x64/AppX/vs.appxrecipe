@@ -30,13 +30,13 @@
     <AppXManifest Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2024-10-24T11:18:27.442</Modified>
+      <Modified>2024-10-24T12:21:22.966</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2024-10-17T12:39:46.018</Modified>
+      <Modified>2024-10-24T12:07:06.657</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\MAUIBasics.runtimeconfig.json">
       <PackagePath>MAUIBasics.runtimeconfig.json</PackagePath>
@@ -44,11 +44,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\MAUIBasics.dll">
       <PackagePath>MAUIBasics.dll</PackagePath>
-      <Modified>2024-10-24T11:18:25.201</Modified>
+      <Modified>2024-10-24T12:21:22.603</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\apphost.exe">
       <PackagePath>MAUIBasics.exe</PackagePath>
-      <Modified>2024-10-24T11:18:25.400</Modified>
+      <Modified>2024-10-24T12:21:22.610</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\Resources\Raw\AboutAssets.txt">
       <PackagePath>AboutAssets.txt</PackagePath>
@@ -288,7 +288,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\MAUIBasics.deps.json">
       <PackagePath>MAUIBasics.deps.json</PackagePath>
-      <Modified>2024-10-17T12:39:45.689</Modified>
+      <Modified>2024-10-24T12:07:06.287</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.19041.34\lib\net6.0\Microsoft.Windows.SDK.NET.dll">
       <PackagePath>Microsoft.Windows.SDK.NET.dll</PackagePath>

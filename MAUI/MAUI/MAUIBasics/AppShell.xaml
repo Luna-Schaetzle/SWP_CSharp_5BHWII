@@ -15,5 +15,9 @@
         Title="Ueber Uns"
         ContentTemplate="{DataTemplate views:AboutUsPage}"
         Route="AboutUsPage" />
+    <ShellContent
+       Title="Registrieren"
+       ContentTemplate="{DataTemplate views:Registrierungsformular}"
+       Route="Registrieren" />
 
 </Shell>

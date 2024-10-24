@@ -18,22 +18,25 @@
     
     er berechnet für alle vorhandenen Komponente der Seite die optionale Größe
     
-    Grid ... Tabellenartiges Layout 
+    Grid ... Tabellenartiges Layout mit Zeilen und Spalten
+
+    WICHTIG: LayoutManager werden häufiger vverschachtelt 
+    z.b. befindet sich innerhalb eines Grid's zusätzlich 
+    eine Horizontale StackLayout
     
     
     -->
-    
-    <VerticalStackLayout>
-        <Label 
-            Text="hello World!"
-            FontSize="Large"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        <Label 
-         Text="TEL.: !"
-         FontSize="Large"
-         VerticalOptions="Center" 
-         HorizontalOptions="Center" />  
 
-    </VerticalStackLayout>
+    <Frame BorderColor="CornflowerBlue" Padding="10" CornerRadius="10" Margin="40">
+        <Grid RowDefinitions="1*, 1* ,1*" ColumnDefinitions="3*, 7*">
+            <Label Text="Name" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+            <Label Text="Peter" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+            <Label Text="Vorname" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" />
+            <Label Text="Müller" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" />
+            <Label Text="Alter" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" />
+            <Label Text="25" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" />
+            <Label Text="Beruf" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" />
+            <Label Text="Softwareentwickler" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" />
+        </Grid>
+    </Frame>
 </ContentPage>

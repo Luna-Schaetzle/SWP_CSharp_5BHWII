@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              x:Class="MAUIBasics.Views.Registrierungsformular"
              Title="Registrierungsformular">
+
+    <ContentPage.BindingContext>
+        <vm:RegistrationPageViewModels/>
+    </ContentPage.BindingContext>
 
     <StackLayout Padding="20" VerticalOptions="Center" Margin="80">
 
@@ -11,7 +16,7 @@
         <!-- Vorname -->
         <StackLayout Orientation="Horizontal">
             <Label Text="Vorname" VerticalOptions="Center" WidthRequest="100"/>
-            <Entry x:Name="FirstNameEntry" Placeholder="Vorname" HorizontalOptions="FillAndExpand"/>
+            <Entry x:Name="FirstNameEntry" Placeholder="Vorname" HorizontalOptions="FillAndExpand" Text="{Binding Firstname}"/>
         </StackLayout>
 
         <!-- Nachname -->
@@ -74,8 +79,8 @@
                     BackgroundColor="Red"
                     TextColor="White"
                     HorizontalOptions="FillAndExpand"
-                    Clicked="OnClearClicked"/>
-        </StackLayout>
+                    Command="{Binding ResetRegistrationFormCommand}"/>
+        </StackLayout> 
 
     </StackLayout>
 </ContentPage>

@@ -178,3 +178,4 @@ C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\n
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\ProjectArchitectures.txt
+C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\CommunityToolkit.Mvvm.dll

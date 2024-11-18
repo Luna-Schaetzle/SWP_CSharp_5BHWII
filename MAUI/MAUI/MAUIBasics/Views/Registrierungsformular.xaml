@@ -5,6 +5,8 @@
              x:Class="MAUIBasics.Views.Registrierungsformular"
              Title="Registrierungsformular">
 
+<!-- xmlns:vm="clr-namespace:..." auf diese Weise wird der Namespace für die ViewModel-Klasse definiert -->
+
     <ContentPage.BindingContext>
         <vm:RegistrationPageViewModels/>
     </ContentPage.BindingContext>
@@ -22,13 +24,13 @@
         <!-- Nachname -->
         <StackLayout Orientation="Horizontal">
             <Label Text="Nachname" VerticalOptions="Center" WidthRequest="100"/>
-            <Entry x:Name="LastNameEntry" Placeholder="Nachname" HorizontalOptions="FillAndExpand"/>
+            <Entry x:Name="LastNameEntry" Placeholder="Nachname" HorizontalOptions="FillAndExpand" Text="{Binding Lastname}"/>
         </StackLayout>
 
         <!-- Geburtsdatum -->
         <StackLayout Orientation="Horizontal">
             <Label Text="Geburtsdatum" VerticalOptions="Center" WidthRequest="100"/>
-            <DatePicker x:Name="BirthDatePicker" HorizontalOptions="FillAndExpand"/>
+            <DatePicker x:Name="BirthDatePicker" HorizontalOptions="FillAndExpand" Date="{Binding Birthdate}"/>
         </StackLayout>
 
         <!-- Grid für Adressdaten -->
@@ -39,25 +41,25 @@
                 <!-- Straße -->
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Straße" VerticalOptions="Center" WidthRequest="100"/>
-                    <Entry x:Name="StreetEntry" Placeholder="Straße" HorizontalOptions="FillAndExpand"/>
+                    <Entry x:Name="StreetEntry" Placeholder="Straße" HorizontalOptions="FillAndExpand" Text="{Binding Street}"/>
                 </StackLayout>
 
                 <!-- Hausnummer -->
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Hausnummer" VerticalOptions="Center" WidthRequest="100"/>
-                    <Entry x:Name="HouseNumberEntry" Placeholder="Hausnummer" HorizontalOptions="FillAndExpand"/>
+                    <Entry x:Name="HouseNumberEntry" Placeholder="Hausnummer" HorizontalOptions="FillAndExpand" Text="{Binding HouseNumber}"/>
                 </StackLayout>
 
                 <!-- PLZ -->
                 <StackLayout Orientation="Horizontal">
                     <Label Text="PLZ" VerticalOptions="Center" WidthRequest="100"/>
-                    <Entry x:Name="PostalCodeEntry" Placeholder="PLZ" HorizontalOptions="FillAndExpand"/>
+                    <Entry x:Name="PostalCodeEntry" Placeholder="PLZ" HorizontalOptions="FillAndExpand" Text="{Binding PostalCode}"/>
                 </StackLayout>
 
                 <!-- Ort -->
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Ort" VerticalOptions="Center" WidthRequest="100"/>
-                    <Entry x:Name="CityEntry" Placeholder="Ort" HorizontalOptions="FillAndExpand"/>
+                    <Entry x:Name="CityEntry" Placeholder="Ort" HorizontalOptions="FillAndExpand" Text="{Binding City}"/>
                 </StackLayout>
             </StackLayout>
         </Frame>
@@ -65,14 +67,17 @@
         <!-- Buttons für Registrieren und Löschen -->
         <StackLayout Orientation="Horizontal" Spacing="20" Margin="40">
 
-
+            <!--
+            die auszuführende Methode wird bei Command angegeben 
+            sie befindet sich in der VM-Klasse und der NAme lautet SaveRegister (ohne Command) 
+            -->
 
             <!-- Registrieren Button -->
             <Button Text="Registrieren"
                     BackgroundColor="Blue"
                     TextColor="White"
                     HorizontalOptions="FillAndExpand"
-                    Clicked="OnRegisterClicked"/>
+                    Command="{Binding SaveRegisterCommand}"/>
 
             <!-- Löschen Button -->
             <Button Text="Löschen"
@@ -80,6 +85,13 @@
                     TextColor="White"
                     HorizontalOptions="FillAndExpand"
                     Command="{Binding ResetRegistrationFormCommand}"/>
+
+            <!-- Go Back to Main Page -->
+            <Button Text="Zurück"
+                    BackgroundColor="Gray"
+                    TextColor="White"
+                    HorizontalOptions="FillAndExpand"
+                    Command="{Binding GoBackToMainCommand}"/>
         </StackLayout> 
 
     </StackLayout>

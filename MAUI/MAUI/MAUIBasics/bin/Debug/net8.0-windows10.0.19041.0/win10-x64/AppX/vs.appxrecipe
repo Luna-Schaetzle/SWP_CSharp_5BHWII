@@ -30,7 +30,7 @@
     <AppXManifest Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2024-11-07T15:52:57.196</Modified>
+      <Modified>2024-11-14T15:14:06.800</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -44,11 +44,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\MAUIBasics.dll">
       <PackagePath>MAUIBasics.dll</PackagePath>
-      <Modified>2024-11-07T15:52:53.546</Modified>
+      <Modified>2024-11-14T15:14:05.508</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\apphost.exe">
       <PackagePath>MAUIBasics.exe</PackagePath>
-      <Modified>2024-11-07T15:52:53.619</Modified>
+      <Modified>2024-11-14T15:14:05.522</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Admin\Desktop\5BHWII\SWP_CSharp_5BHWII\MAUI\MAUI\MAUIBasics\Resources\Raw\AboutAssets.txt">
       <PackagePath>AboutAssets.txt</PackagePath>

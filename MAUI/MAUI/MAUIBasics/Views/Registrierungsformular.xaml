@@ -5,7 +5,7 @@
              x:Class="MAUIBasics.Views.Registrierungsformular"
              Title="Registrierungsformular">
 
-<!-- xmlns:vm="clr-namespace:..." auf diese Weise wird der Namespace für die ViewModel-Klasse definiert -->
+    <!-- xmlns:vm="clr-namespace:..." auf diese Weise wird der Namespace für die ViewModel-Klasse definiert -->
 
     <ContentPage.BindingContext>
         <vm:RegistrationPageViewModels/>
@@ -15,16 +15,16 @@
 
         <Label Text="Registrieren" FontSize="24" HorizontalOptions="Center" />
 
-        <!-- Vorname -->
+        <!-- Name -->
         <StackLayout Orientation="Horizontal">
-            <Label Text="Vorname" VerticalOptions="Center" WidthRequest="100"/>
-            <Entry x:Name="FirstNameEntry" Placeholder="Vorname" HorizontalOptions="FillAndExpand" Text="{Binding Firstname}"/>
+            <Label Text="Name" VerticalOptions="Center" WidthRequest="100"/>
+            <Entry x:Name="NameEntry" Placeholder="Name" HorizontalOptions="FillAndExpand" Text="{Binding Name}"/>
         </StackLayout>
 
-        <!-- Nachname -->
+        <!-- Passwort -->
         <StackLayout Orientation="Horizontal">
-            <Label Text="Nachname" VerticalOptions="Center" WidthRequest="100"/>
-            <Entry x:Name="LastNameEntry" Placeholder="Nachname" HorizontalOptions="FillAndExpand" Text="{Binding Lastname}"/>
+            <Label Text="Passwort" VerticalOptions="Center" WidthRequest="100"/>
+            <Entry x:Name="PasswordEntry" Placeholder="Passwort" IsPassword="True" HorizontalOptions="FillAndExpand" Text="{Binding Password}"/>
         </StackLayout>
 
         <!-- Geburtsdatum -->

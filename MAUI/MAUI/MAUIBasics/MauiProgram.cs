@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MAUIBasics.Models.DB;
+using MAUIBasics.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace MAUIBasics
 {
@@ -15,9 +17,17 @@ namespace MAUIBasics
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // Registrierung von UserContext als Singleton
+            builder.Services.AddSingleton<UserContext>();
+
+            // Registrierung von ViewModels
+            builder.Services.AddTransient<RegistrationPageViewModels>();
+            builder.Services.AddTransient<LoginPageViewModels>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+
 
             return builder.Build();
         }

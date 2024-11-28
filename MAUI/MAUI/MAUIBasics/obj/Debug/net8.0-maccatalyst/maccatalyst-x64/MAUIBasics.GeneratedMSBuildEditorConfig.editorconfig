@@ -63,3 +63,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MAUIBasics.Views.Registrierungsformular.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\Registrierungsformular.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\Registrierungsformular.xaml
+
+[C:/Users/Admin/Desktop/5BHWII/SWP_CSharp_5BHWII/MAUI/MAUI/MAUIBasics/Views/ShopPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = MAUIBasics.Views.ShopPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\ShopPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\ShopPage.xaml

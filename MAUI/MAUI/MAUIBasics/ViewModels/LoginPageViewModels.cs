@@ -2,25 +2,20 @@ using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MAUIBasics.Models.DB; // Namespace für UserContext
-using MAUIBasics.Models; // Namespace für User
-using Microsoft.Maui.Controls; // Für Shell.Current.DisplayAlert
-using Microsoft.EntityFrameworkCore; // Für EF Core Erweiterungsmethoden wie FirstOrDefaultAsync
-using BCrypt.Net; // Für BCrypt-Hashing
+using MAUIBasics.Models.DB; // Namespace fï¿½r UserContext
+using MAUIBasics.Models; // Namespace fï¿½r User
+using Microsoft.Maui.Controls; // Fï¿½r Shell.Current.DisplayAlert
+using Microsoft.EntityFrameworkCore; // Fï¿½r EF Core Erweiterungsmethoden wie FirstOrDefaultAsync
+using BCrypt.Net; // Fï¿½r BCrypt-Hashing
 
 namespace MAUIBasics.ViewModels
 {
     internal partial class LoginPageViewModels : ObservableObject
     {
-        private readonly UserContext _userContext;
+    
 
         // Konstruktor mit Dependency Injection
-        /*
-        public LoginPageViewModels(UserContext userContext)
-        {
-            _userContext = userContext;
-        }
-        */
+        // Konstruktor mit Dependency Injection
 
         // Alle Felder der View
 
@@ -35,7 +30,7 @@ namespace MAUIBasics.ViewModels
         // Commands
 
         /// <summary>
-        /// Command zum Zurücksetzen des Login-Formulars.
+        /// Command zum Zurï¿½cksetzen des Login-Formulars.
         /// </summary>
         [RelayCommand]
         public void ResetLoginForm()
@@ -45,17 +40,20 @@ namespace MAUIBasics.ViewModels
         }
 
         /// <summary>
-        /// Command zum Ausführen des Logins.
-        /// Dieser Command ist nur ausführbar, wenn das Formular gültig ist.
+        /// Command zum Ausfï¿½hren des Logins.
+        /// Dieser Command ist nur ausfï¿½hrbar, wenn das Formular gï¿½ltig ist.
         /// </summary>
         [RelayCommand(CanExecute = nameof(ValidateLoginForm))]
         public async Task LoginAsync()
         {
             try
             {
-                // Suche den Benutzer in der Datenbank
-                var user = await _userContext.Users.FirstOrDefaultAsync(u => u.Name.Equals(this.Name, StringComparison.OrdinalIgnoreCase));
+                //Datenbank Abfrage
+                using var _userContext = new UserContext();
 
+                // Suche den Benutzer in der Datenbank
+                //var user = await _userContext.Users.FirstOrDefaultAsync(u => u.Name.Equals(this.Name, StringComparison.OrdinalIgnoreCase));
+                var user = await _userContext.Users.FirstOrDefaultAsync(u => u.Name.Equals(this.Name));
                 if (user == null)
                 {
                     // Benutzername nicht gefunden
@@ -63,7 +61,7 @@ namespace MAUIBasics.ViewModels
                     return;
                 }
 
-                // Überprüfe das Passwort
+                // ï¿½berprï¿½fe das Passwort
                 bool isPasswordValid = VerifyPassword(this.Password, user.PasswordHash);
 
                 if (!isPasswordValid)
@@ -74,9 +72,9 @@ namespace MAUIBasics.ViewModels
                 }
 
                 // Erfolgreicher Login
-                await Shell.Current.DisplayAlert("Erfolg", "Login erfolgreich!", "OK");
+                await Shell.Current.DisplayAlert("Erfolg", "Login erfolgreich! Mit Name: " + user.Name, "OK");
 
-                // Formular zurücksetzen
+                // Formular zurï¿½cksetzen
                 ResetLoginForm();
 
                 // Navigation zur Hauptseite oder einer anderen Seite
@@ -92,14 +90,14 @@ namespace MAUIBasics.ViewModels
         /// <summary>
         /// Validierung des Login-Formulars.
         /// </summary>
-        /// <returns>True, wenn das Formular gültig ist; andernfalls False.</returns>
+        /// <returns>True, wenn das Formular gï¿½ltig ist; andernfalls False.</returns>
         private bool ValidateLoginForm()
         {
             return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Password);
         }
 
         /// <summary>
-        /// Methode zur Überprüfung des Passworts mit dem gehashten Passwort.
+        /// Methode zur ï¿½berprï¿½fung des Passworts mit dem gehashten Passwort.
         /// </summary>
         /// <param name="password">Das eingegebene Passwort.</param>
         /// <param name="hashedPassword">Das gehashte Passwort aus der Datenbank.</param>

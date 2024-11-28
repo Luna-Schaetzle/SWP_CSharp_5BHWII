@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
+             x:Class="MAUIBasics.Views.ShopPage"
+             Title="ShopPage">
+    <ContentPage.BindingContext>
+        <vm:ShopPageViewModel />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout>
+        <CarouselView ItemsSource="{Binding Articles}">
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10">
+                        <Label Text="{Binding Name}" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" />
+                        <Label Text="{Binding Price, StringFormat='Price: {0:C}'}" />
+                        <Label Text="{Binding ReleaseDate, StringFormat='Released on: {0:MM/dd/yyyy}'}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+    </VerticalStackLayout>
+</ContentPage>

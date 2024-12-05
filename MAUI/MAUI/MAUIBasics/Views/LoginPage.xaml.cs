@@ -3,9 +3,10 @@ using MAUIBasics.ViewModels;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+	public LoginPage(LoginPageViewModels vm)
 	{
 		InitializeComponent();
+		this.BindingContext = vm;
     }
 
 

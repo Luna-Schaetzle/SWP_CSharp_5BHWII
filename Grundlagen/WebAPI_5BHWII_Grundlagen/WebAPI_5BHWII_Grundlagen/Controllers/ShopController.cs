@@ -39,7 +39,7 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
             this._dbManager = dbManager;
         }
 
-        public async Task<bool> CheckApiKey(string apiKey)
+        private async Task<bool> CheckApiKey(string apiKey)
         {
             var user = await _dbManager.Users.FirstOrDefaultAsync(u => u.ApiKey == apiKey);
             if(user == null){

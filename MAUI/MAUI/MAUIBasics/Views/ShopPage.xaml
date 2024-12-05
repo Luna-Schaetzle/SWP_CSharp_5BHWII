@@ -3,23 +3,70 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              x:Class="MAUIBasics.Views.ShopPage"
-             Title="ShopPage">
+             Title="ShopPage"
+             x:Name="Page">
+
     <ContentPage.BindingContext>
         <vm:ShopPageViewModel />
     </ContentPage.BindingContext>
-    <VerticalStackLayout>
-        <CarouselView ItemsSource="{Binding Articles}">
-            <CarouselView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10">
-                        <Label Text="{Binding Name}" 
-                               FontAttributes="Bold" 
-                               FontSize="Medium" />
-                        <Label Text="{Binding Price, StringFormat='Price: {0:C}'}" />
-                        <Label Text="{Binding ReleaseDate, StringFormat='Released on: {0:MM/dd/yyyy}'}" />
-                    </StackLayout>
-                </DataTemplate>
-            </CarouselView.ItemTemplate>
-        </CarouselView>
-    </VerticalStackLayout>
+
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Artikelübersicht"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,20" />
+
+            <!-- Navigationsbutton zum Warenkorb -->
+            <!--Button Text="Warenkorb ansehen"
+                    BackgroundColor="Orange"
+                    TextColor="White"
+                    Command="{Binding NavigateToCartCommand}"
+                    Margin="0,0,0,10"/-->
+
+            <CarouselView ItemsSource="{Binding Articles}"
+                          HeightRequest="400"
+                          IndicatorView="indicatorView">
+
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="LightGray"
+                               CornerRadius="10"
+                               Padding="10"
+                               Margin="5"
+                               HasShadow="True">
+                            <StackLayout>
+                                <Label Text="{Binding Name}"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       HorizontalOptions="Center" />
+                                <Image Source="{Binding ImageUrl}" 
+                                       Aspect="AspectFill" 
+                                       HeightRequest="200"
+                                       Margin="0,10,0,10"/>
+                                <Label Text="{Binding Price, StringFormat='Preis: {0:C}'}"
+                                       FontSize="16" />
+                                <Label Text="{Binding ReleaseDate, StringFormat='Veröffentlicht am: {0:dd.MM.yyyy}'}"
+                                       FontSize="14"
+                                       TextColor="Gray" />
+                                <!-- Hinzugefügter Button -->
+                                <Button Text="Zum Warenkorb Hinzufügen"
+                                        BackgroundColor="Green"
+                                        TextColor="White"
+                                        Command="{Binding BindingContext.AddToCartCommand, Source={x:Reference Page}}"
+                                        CommandParameter="{Binding .}"
+                                        Margin="0,10,0,0"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+
+            <!-- Indikator für CarouselView -->
+            <IndicatorView x:Name="indicatorView"
+                           IndicatorColor="LightGray"
+                           SelectedIndicatorColor="DarkGray"
+                           Margin="0,10,0,0"/>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

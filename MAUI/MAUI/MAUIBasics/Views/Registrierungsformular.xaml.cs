@@ -1,10 +1,14 @@
+//using Android.Systems;
+using MAUIBasics.ViewModels;
+
 namespace MAUIBasics.Views;
 
 public partial class Registrierungsformular : ContentPage
 {
-	public Registrierungsformular()
+	public Registrierungsformular(RegistrationPageViewModels vm)
 	{
 		InitializeComponent();
+                this.BindingContext = vm; 
 	}
 
 	   private async void OnRegisterClicked(object sender, EventArgs e)

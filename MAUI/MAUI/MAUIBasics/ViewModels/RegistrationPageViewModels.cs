@@ -9,7 +9,7 @@ using BCrypt.Net; // Für BCrypt-Hashing
 
 namespace MAUIBasics.ViewModels
 {
-    internal partial class RegistrationPageViewModels : ObservableObject
+    public partial class RegistrationPageViewModels : ObservableObject
     {
         // Alle Felder der View
 
@@ -42,6 +42,11 @@ namespace MAUIBasics.ViewModels
         private string _city;
 
         // Commands
+        /*public RegistrationPageViewModels(UserContext context)
+        {
+            _context = context;
+        }*/
+    
 
         [RelayCommand]
         public void ResetRegistrationForm()

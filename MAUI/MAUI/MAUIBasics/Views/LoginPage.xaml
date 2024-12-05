@@ -5,9 +5,9 @@
              xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              Title="LoginPage">
     
-    <ContentPage.BindingContext>
+    <!--ContentPage.BindingContext>
         <vm:LoginPageViewModels></vm:LoginPageViewModels>
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext-->
     
     <StackLayout Padding="20" VerticalOptions="Center" Margin="80">
         <Label Text="Welcome to MAUI App" 

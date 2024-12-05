@@ -6,9 +6,9 @@
              Title="Registrierungsformular">
 
     <!-- BindingContext auf das ViewModel setzen -->
-    <ContentPage.BindingContext>
+    <!--ContentPage.BindingContext>
         <vm:RegistrationPageViewModels/>
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext-->
 
     <!-- Haupt-Grid für das gesamte Layout -->
     <Grid Padding="20" Margin="80">

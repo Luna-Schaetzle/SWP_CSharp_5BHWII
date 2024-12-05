@@ -10,7 +10,7 @@ using BCrypt.Net; // F�r BCrypt-Hashing
 
 namespace MAUIBasics.ViewModels
 {
-    internal partial class LoginPageViewModels : ObservableObject
+    public partial class LoginPageViewModels : ObservableObject
     {
     
 

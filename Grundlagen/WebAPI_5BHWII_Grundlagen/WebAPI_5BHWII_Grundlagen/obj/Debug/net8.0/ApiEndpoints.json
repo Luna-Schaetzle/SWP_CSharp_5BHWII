@@ -1,32 +1,6 @@
 [
   {
     "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
-    "Method": "CheckApiKey",
-    "RelativePath": "api/Shop",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "apiKey",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Boolean",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
     "Method": "AddArticle",
     "RelativePath": "api/Shop/article",
     "HttpMethod": "POST",

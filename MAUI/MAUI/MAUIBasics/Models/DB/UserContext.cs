@@ -10,6 +10,8 @@ namespace MAUIBasics.Models.DB
     {
 
         public DbSet<User> Users { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Article> Articles { get; set; } // Optional, falls du Artikel lokal speichern möchtest
 
         public UserContext()
         {

@@ -42,6 +42,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = MAUIBasics.Views.AboutUsPa
 build_metadata.AdditionalFiles.TargetPath = Views\AboutUsPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\AboutUsPage.xaml
 
+[C:/Users/Admin/Desktop/5BHWII/SWP_CSharp_5BHWII/MAUI/MAUI/MAUIBasics/Views/CartPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = MAUIBasics.Views.CartPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\CartPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\CartPage.xaml
+
 [C:/Users/Admin/Desktop/5BHWII/SWP_CSharp_5BHWII/MAUI/MAUI/MAUIBasics/Views/LoginPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MAUIBasics.Views.LoginPage.xaml

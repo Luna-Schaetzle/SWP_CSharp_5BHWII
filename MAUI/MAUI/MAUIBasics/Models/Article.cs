@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Klassenbiliothek_Article
+namespace MAUIBasics.Models
 {
     public class Article
     {

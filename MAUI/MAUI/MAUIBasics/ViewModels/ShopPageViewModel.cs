@@ -14,7 +14,6 @@ namespace MAUIBasics.ViewModels
     public partial class ShopPageViewModel : ObservableObject
     {
         private readonly HttpClient _httpClient;
-        private readonly CartService _cartService;
         private const string ApiKey = "2602beb8-013f-4d6b-9451-22c2e549875d";
         private const string ApiUrl = "https://localhost:7243/api/shop/articles";
         private const string ApiUrlBasket = "https://localhost:7243/api/shop/";
@@ -27,8 +26,9 @@ namespace MAUIBasics.ViewModels
             Articles = new ObservableCollection<Article>();
             //_cartService = cartService;
             _httpClient = new HttpClient();
-            new Task(async () => await LoadArticlesAsync()).Start();
-            //TODO: Task machen
+            LoadArticlesAsync();
+        
+
         }
 
         // Command zum Hinzufügen eines Artikels zum Warenkorb
@@ -36,10 +36,30 @@ namespace MAUIBasics.ViewModels
         private async Task AddToCartAsync(Article selectedArticle)
         {
             //einen Basket eintrag erstellen 
+            /*
             Basket basket = new Basket();
             basket.Articles.Add(selectedArticle);
-            //basket.user; //TODO: User setzen der Angemeldet ist
+            */
+            try
+            {
+                var user = await SecureStorage.GetAsync("user");
+                if (user != null)
+                {
 
+                    await Shell.Current.DisplayAlert("Debug", $"User: {user}, Article: {selectedArticle.Name}", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Fehler", "Kein Benutzer angemeldet.", "OK");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+            }
+
+            /*
 
             //Mittels der API den Artikel zum Warenkorb hinzufügen
             try
@@ -58,6 +78,7 @@ namespace MAUIBasics.ViewModels
             {
                 await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
             }
+            */
 
         }
 

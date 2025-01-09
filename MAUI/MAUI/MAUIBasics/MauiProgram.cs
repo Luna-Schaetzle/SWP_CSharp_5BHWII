@@ -1,6 +1,8 @@
 ﻿//using Android.Hardware.Camera2;
 using MAUIBasics.Models.DB;
 using MAUIBasics.ViewModels;
+using MAUIBasics.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace MAUIBasics
@@ -15,9 +17,6 @@ namespace MAUIBasics
                 .RegisterViews()
                 .RegisterViewModels()
                 .RegisterServices()
-                .LoginServices()
-                .LoginViews()
-                .LoginViewModels()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -28,9 +27,7 @@ namespace MAUIBasics
             builder.Services.AddSingleton<UserContext>();
 
             // Registrierung von ViewModels
-            builder.Services.AddTransient<RegistrationPageViewModels>();
-            builder.Services.AddTransient<LoginPageViewModels>();
-
+            
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
@@ -41,8 +38,9 @@ namespace MAUIBasics
 
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddTransient<RegistrationPageViewModels>();
-            mauiAppBuilder.Services.AddTransient<LoginPageViewModels>();
+            mauiAppBuilder.Services.AddTransient<Registrierungsformular>();
+            mauiAppBuilder.Services.AddTransient<LoginPage>();
+            mauiAppBuilder.Services.AddTransient<ShopPage>();
 
             return mauiAppBuilder;
         }
@@ -51,6 +49,7 @@ namespace MAUIBasics
         {
             mauiAppBuilder.Services.AddTransient<RegistrationPageViewModels>();
             mauiAppBuilder.Services.AddTransient<LoginPageViewModels>();
+            mauiAppBuilder.Services.AddTransient<ShopPageViewModel>();
 
             return mauiAppBuilder;
         }
@@ -62,24 +61,6 @@ namespace MAUIBasics
             return mauiAppBuilder;
         }
 
-        public static MauiAppBuilder LoginViews(this MauiAppBuilder mauiAppBuilder)
-        {
-            mauiAppBuilder.Services.AddTransient<LoginPageViewModels>();
 
-            return mauiAppBuilder;
-        }
-        public static MauiAppBuilder LoginServices(this MauiAppBuilder mauiAppBuilder)
-        {
-            mauiAppBuilder.Services.AddSingleton<UserContext>();
-
-            return mauiAppBuilder;
-        }
-
-        public static MauiAppBuilder LoginViewModels(this MauiAppBuilder mauiAppBuilder)
-        {
-            mauiAppBuilder.Services.AddTransient<LoginPageViewModels>();
-
-            return mauiAppBuilder;
-        }
     }
 }

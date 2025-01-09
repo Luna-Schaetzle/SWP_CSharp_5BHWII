@@ -48,6 +48,10 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
             return true;
         }
 
+        //#############
+        //Article Funktionen
+        //#############
+
         [HttpGet("articles")] 
         public async Task<IActionResult> GetArticles(string apiKey)
         {   
@@ -110,6 +114,60 @@ namespace WebAPI_5BHWII_Grundlagen.Controllers
             await _dbManager.SaveChangesAsync();
             return new JsonResult(erfolg);
         }
+
+        //###################
+        //Basket Funktionen
+        //###################
+
+        //alle Artikel aus dem Basket eines Users holen
+        [HttpGet("basket/{userId:int}")]
+        public async Task<IActionResult> GetBasket(int userId, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
+            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
+            return new JsonResult(basket);
+        }
+
+        //einen Artikel in den Basket eines Users hinzufügen
+        [HttpPost("basket")]
+        public async Task<IActionResult> AddToBasket(Basket basket, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
+            var erfolg = await _dbManager.Baskets.AddAsync(basket);
+            await _dbManager.SaveChangesAsync();
+            return new JsonResult(erfolg);
+        }
+
+        //einen Artikel aus dem Basket eines Users löschen
+        [HttpDelete("basket/{userId:int}")]
+        public async Task<IActionResult> DelFromBasket(int userId, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
+            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
+            var erfolg = _dbManager.Baskets.Remove(basket);
+            await _dbManager.SaveChangesAsync();
+            return new JsonResult(erfolg);
+        }
+
+        //###################
+        //Einkaufs Funktionen
+        //###################
+
+        //"Einkaufen" - alle Artikel aus dem Basket eines Users kaufen
+        [HttpPost("basket/buy/{userId:int}")]
+        public async Task<IActionResult> BuyBasket(int userId, string apiKey){
+            if(!await CheckApiKey(apiKey)){
+                return BadRequest("API Key not valid");
+            }
+            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
+            var erfolg = _dbManager.Baskets.Remove(basket);
+            await _dbManager.SaveChangesAsync();
+            return new JsonResult(erfolg);
+        }
+
 
 
     }

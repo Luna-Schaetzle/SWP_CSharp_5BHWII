@@ -5,9 +5,9 @@
              Title="Warenkorb"
              x:Name="Page">
 
-    <ContentPage.BindingContext>
-        <vm:CartPageViewModels />
-    </ContentPage.BindingContext>
+    <!--ContentPage.BindingContext>
+        <vm:CartPageViewModels/>
+    </ContentPage.BindingContext-->
 
     <ContentPage.Content>
         <StackLayout Padding="10">

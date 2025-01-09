@@ -5,10 +5,11 @@ namespace MAUIBasics.Views
 {
     public partial class ShopPage : ContentPage
     {
-        public ShopPage()
+        public ShopPage(ShopPageViewModel vm)
         {
             InitializeComponent();
             //BindingContext = new ShopViewModel();
+            BindingContext = vm;
         }
     }
 }

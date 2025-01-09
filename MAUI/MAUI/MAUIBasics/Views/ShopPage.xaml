@@ -4,11 +4,11 @@
              xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              x:Class="MAUIBasics.Views.ShopPage"
              Title="ShopPage"
-             x:Name="Page">
+             >
 
-    <ContentPage.BindingContext>
-        <vm:ShopPageViewModel />
-    </ContentPage.BindingContext>
+    <!--ContentPage.BindingContext>
+        <vm:ShopPageViewModel/>
+    </ContentPage.BindingContext-->
 
     <ContentPage.Content>
         <StackLayout Padding="10">

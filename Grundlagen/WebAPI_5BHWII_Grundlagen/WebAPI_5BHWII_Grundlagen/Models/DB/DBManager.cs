@@ -10,6 +10,8 @@ namespace WebAPI_5BHWII_Grundlagen.Models.DB
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Basket> Baskets { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString = "server=localhost;database=shop_webapi;user=root;password=zwiebel55";

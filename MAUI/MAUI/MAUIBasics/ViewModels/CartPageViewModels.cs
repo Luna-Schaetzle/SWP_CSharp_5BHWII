@@ -12,7 +12,7 @@ namespace MAUIBasics.ViewModels
 {
     public partial class CartPageViewModel : ObservableObject
     {
-        private readonly CartService _cartService;
+        //private readonly CartService _cartService;
 
         [ObservableProperty]
         private ObservableCollection<CartItem> cart;
@@ -22,15 +22,15 @@ namespace MAUIBasics.ViewModels
 
         public CartPageViewModel(CartService cartService)
         {
-            _cartService = cartService;
-            Cart = _cartService.Cart;
+            //_cartService = cartService;
+            //Cart = _cartService.Cart;
             CalculateTotalPrice();
         }
 
         // Berechnung der Gesamtsumme
         private void CalculateTotalPrice()
         {
-            TotalPrice = Cart.Sum(item => item.Article.Price * item.Quantity);
+            //TotalPrice = Cart.Sum(item => item.Article.Price * item.Quantity);
         }
 
         // Aktualisiere die Gesamtsumme, wenn sich der Warenkorb ändert
@@ -43,25 +43,13 @@ namespace MAUIBasics.ViewModels
         [RelayCommand]
         private async Task RemoveFromCartAsync(CartItem cartItem)
         {
-            if (cartItem == null)
-                return;
-
-            await _cartService.RemoveFromCartAsync(cartItem);
-            CalculateTotalPrice();
-            await Application.Current.MainPage.DisplayAlert("Erfolg", $"{cartItem.Article.Name} wurde aus dem Warenkorb entfernt.", "OK");
+           
         }
 
         // Command zum Leeren des Warenkorbs
         [RelayCommand]
         private async Task ClearCartAsync()
         {
-            bool confirm = await Application.Current.MainPage.DisplayAlert("Bestätigung", "Möchtest du den gesamten Warenkorb leeren?", "Ja", "Nein");
-            if (confirm)
-            {
-                await _cartService.ClearCartAsync();
-                CalculateTotalPrice();
-                await Application.Current.MainPage.DisplayAlert("Erfolg", "Der Warenkorb wurde geleert.", "OK");
-            }
         }
     }
 }

@@ -55,7 +55,7 @@ Projektordner
 ## Vorteile des MVVM-Musters
 
 1. **Klare Trennung der Verantwortlichkeiten**: 
-   - Die View enthält nur die Darstellung.
+   - Die View enthält nur die Darstellung. Können von Designern erstellt werden.
    - Die Logik und Daten sind im Model und ViewModel gekapselt.
 
 2. **Testbarkeit**:
@@ -67,6 +67,8 @@ Projektordner
 4. **Wiederverwendbarkeit**:
    - Das ViewModel kann mit verschiedenen Views wiederverwendet werden.
 
+5. **Aufteilen der Arbeit**1:
+   - Die Views können von Designern erstellt werden, während Entwickler sich auf die Logik konzentrieren.
 
 
 

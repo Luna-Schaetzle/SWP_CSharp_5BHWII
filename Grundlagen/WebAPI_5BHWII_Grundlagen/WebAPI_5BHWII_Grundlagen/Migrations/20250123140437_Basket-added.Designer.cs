@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI_5BHWII_Grundlagen.Models.DB;
 
@@ -11,9 +12,11 @@ using WebAPI_5BHWII_Grundlagen.Models.DB;
 namespace WebAPI_5BHWII_Grundlagen.Migrations
 {
     [DbContext(typeof(DBManager))]
-    partial class DBManagerModelSnapshot : ModelSnapshot
+    [Migration("20250123140437_Basket-added")]
+    partial class Basketadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

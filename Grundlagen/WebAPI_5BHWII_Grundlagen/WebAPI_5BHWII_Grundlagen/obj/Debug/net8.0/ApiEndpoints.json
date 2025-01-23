@@ -100,6 +100,90 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "AddToBasket",
+    "RelativePath": "api/Shop/basket",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "basket",
+        "Type": "Klassenbiliothek_Article.Basket",
+        "IsRequired": true
+      },
+      {
+        "Name": "apiKey",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "GetBasket",
+    "RelativePath": "api/Shop/basket/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "apiKey",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "DelFromBasket",
+    "RelativePath": "api/Shop/basket/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "apiKey",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.ShopController",
+    "Method": "BuyBasket",
+    "RelativePath": "api/Shop/basket/buy/{userId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "apiKey",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebAPI_5BHWII_Grundlagen.Controllers.UserController",
     "Method": "CheckAPIKey",
     "RelativePath": "api/User/CheckAPIKey",

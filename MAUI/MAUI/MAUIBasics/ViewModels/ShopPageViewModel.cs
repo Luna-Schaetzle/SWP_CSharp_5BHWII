@@ -1,73 +1,84 @@
-﻿// ViewModels/ShopPageViewModel.cs
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MAUIBasics.Models;
-using MAUIBasics.Services;
 using Microsoft.Maui.Controls;
+using MAUIBasics.Services; // Add this line if IUserService is in the MAUIBasics.Services namespace
 
 namespace MAUIBasics.ViewModels
 {
     public partial class ShopPageViewModel : ObservableObject
     {
         private readonly HttpClient _httpClient;
+        private readonly IUserService _userService;
         private const string ApiKey = "2602beb8-013f-4d6b-9451-22c2e549875d";
-        private const string ApiUrl = "https://localhost:7243/api/shop/articles";
-        private const string ApiUrlBasket = "https://localhost:7243/api/shop/";
+        private const string ApiUrlArticles = "https://localhost:7243/api/shop/articles";
+        private const string ApiUrlBasket = "https://localhost:7243/api/shop/basket";
 
         [ObservableProperty]
         private ObservableCollection<Article> articles;
 
-        public ShopPageViewModel()
-        {
-            Articles = new ObservableCollection<Article>();
-            //_cartService = cartService;
-            _httpClient = new HttpClient();
-            LoadArticlesAsync();
-        
+        [ObservableProperty]
+        private ObservableCollection<Basket> basket;
 
+        [ObservableProperty]
+        private bool isUserLoggedIn;
+
+        public ShopPageViewModel(IUserService userService)
+        {
+            _userService = userService;
+            Articles = new ObservableCollection<Article>();
+            Basket = new ObservableCollection<Basket>();
+            _httpClient = new HttpClient();
+            
+            IsUserLoggedIn = _userService.IsLoggedIn;
+            
+            // Auf Änderungen des Login-Status reagieren
+            if (_userService is UserService service)
+            {
+                service.UserChanged += (s, user) =>
+                {
+                    IsUserLoggedIn = user != null;
+                    LoadBasketAsync().ConfigureAwait(false);
+                };
+            }
+            
+            LoadArticlesAsync();
         }
 
-        // Command zum Hinzufügen eines Artikels zum Warenkorb
         [RelayCommand]
         private async Task AddToCartAsync(Article selectedArticle)
         {
-            //einen Basket eintrag erstellen 
-            /*
-            Basket basket = new Basket();
-            basket.Articles.Add(selectedArticle);
-            */
-            try
+            if (!_userService.IsLoggedIn)
             {
-                var user = await SecureStorage.GetAsync("user");
-                if (user != null)
-                {
-
-                    await Shell.Current.DisplayAlert("Debug", $"User: {user}, Article: {selectedArticle.Name}", "OK");
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Fehler", "Kein Benutzer angemeldet.", "OK");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
+                return;
             }
 
-            /*
+            if (selectedArticle == null)
+            {
+                await Shell.Current.DisplayAlert("Fehler", "Kein Artikel ausgewählt.", "OK");
+                return;
+            }
 
-            //Mittels der API den Artikel zum Warenkorb hinzufügen
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"{ApiUrlBasket}/basket?apiKey={ApiKey}", basket);
+                var basketItem = new Basket
+                {
+                    BasketId = 0,
+                    user = _userService.CurrentUser, // Aktueller User aus dem UserService
+                    article = selectedArticle
+                };
+
+                var response = await _httpClient.PostAsJsonAsync($"{ApiUrlBasket}?apiKey={ApiKey}", basketItem);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    await Shell.Current.DisplayAlert("Erfolg", "Artikel wurde zum Warenkorb hinzugefügt.", "OK");
+                    await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
+                    await LoadBasketAsync(); // Warenkorb neu laden
                 }
                 else
                 {
@@ -78,32 +89,83 @@ namespace MAUIBasics.ViewModels
             {
                 await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
             }
-            */
-
         }
 
-        // Command zum Navigieren zur CartPage
         [RelayCommand]
-        private async Task NavigateToCartAsync()
+        private async Task LoadBasketAsync()
         {
-            //await Shell.Current.GoToAsync(nameof(CartPage));
+            if (!_userService.IsLoggedIn)
+            {
+                Basket.Clear();
+                return;
+            }
+
+            try
+            {
+                var userId = _userService.CurrentUser.Id;
+                var response = await _httpClient.GetAsync($"{ApiUrlBasket}/{userId}?apiKey={ApiKey}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var basketList = await response.Content.ReadFromJsonAsync<List<Basket>>();
+                    if (basketList != null)
+                    {
+                        Basket = new ObservableCollection<Basket>(basketList);
+                    }
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Fehler", "Fehler beim Laden des Warenkorbs.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+            }
         }
 
-        // Laden der Artikel von der API
+        [RelayCommand]
+        private async Task BuyBasketAsync()
+        {
+            if (!_userService.IsLoggedIn)
+            {
+                await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
+                return;
+            }
+
+            try
+            {
+                var userId = _userService.CurrentUser.Id;
+                var response = await _httpClient.PostAsync($"{ApiUrlBasket}/buy/{userId}?apiKey={ApiKey}", null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Basket.Clear();
+                    await Shell.Current.DisplayAlert("Erfolg", "Warenkorb erfolgreich gekauft.", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Fehler", "Fehler beim Kaufen des Warenkorbs.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+            }
+        }
+
         private async Task LoadArticlesAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{ApiUrl}?apiKey={ApiKey}");
+                var response = await _httpClient.GetAsync($"{ApiUrlArticles}?apiKey={ApiKey}");
 
-                 if (response.IsSuccessStatusCode){
+                if (response.IsSuccessStatusCode)
+                {
                     var articlesList = await response.Content.ReadFromJsonAsync<List<Article>>();
                     if (articlesList != null)
                     {
-                        foreach (var article in articlesList)
-                        {
-                            Articles.Add(article);
-                        }
+                        Articles = new ObservableCollection<Article>(articlesList);
                     }
                 }
                 else

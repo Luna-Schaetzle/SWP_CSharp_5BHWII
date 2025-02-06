@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MAUIBasics.Models
+namespace MAUIBasics
 {
     public class User
     {
@@ -12,7 +11,11 @@ namespace MAUIBasics.Models
         public string Name { get; set; }
 
         [Required]
-        public string PasswordHash { get; set; }
+        [EmailAddress] // Validierung der E-Mail-Formatierung
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
 
         public DateTime Birthdate { get; set; }
 
@@ -27,5 +30,7 @@ namespace MAUIBasics.Models
 
         [Required]
         public string City { get; set; }
+
+        public string? ApiKey { get; set; }
     }
 }

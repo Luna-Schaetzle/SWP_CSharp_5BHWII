@@ -12,7 +12,8 @@ namespace MAUIBasics.Models
         [Key]
         public int BasketId { get; set; }
         public User user { get; set; }
-        public List<Article> Articles { get; set; }
+        public Article article { get; set; }
+
 
     }
 }

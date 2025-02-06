@@ -1,4 +1,3 @@
-
 using MAUIBasics.Models.DB;
 using MAUIBasics.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,20 +6,27 @@ using System.Threading.Tasks;
 
 namespace MAUIBasics.Services
 {
-    public class CartService 
+    public class CartService : ICartService
     {
         private readonly UserContext _dbContext;
 
         public ObservableCollection<CartItem> Cart { get; }
 
-        /*public CartService(UserContext dbContext)
+        public CartService(UserContext dbContext)
         {
             _dbContext = dbContext;
             Cart = new ObservableCollection<CartItem>();
-            LoadCartAsync().Wait();
-        }*/
+            InitializeDatabase();
+        }
 
-        // Laden des Warenkorbs aus der Datenbank
+        // Initialisiert die SQLite-Datenbank
+        private async void InitializeDatabase()
+        {
+            await _dbContext.Database.EnsureCreatedAsync();
+            await LoadCartAsync();
+        }
+
+        // Laden des Warenkorbs aus SQLite
         public async Task LoadCartAsync()
         {
             var cartItems = await _dbContext.CartItems.Include(c => c.Article).ToListAsync();
@@ -31,46 +37,53 @@ namespace MAUIBasics.Services
             }
         }
 
-        // Hinzufügen eines Artikels zum Warenkorb
-        public async Task AddToCartAsync(Article article)
+        // Artikel zum Warenkorb hinzufügen
+        public async Task AddToCartAsync(Article article, User user, int quantity)
         {
-            var existingItem = await _dbContext.CartItems.FirstOrDefaultAsync(c => c.ArticleId == article.ArticleId);
+            var existingItem = await _dbContext.CartItems
+                .FirstOrDefaultAsync(c => c.Article.ArticleId == article.ArticleId && c.user.UserId == user.UserId);
+
             if (existingItem != null)
             {
-                existingItem.Quantity += 1;
+                existingItem.Quantity += quantity;
                 _dbContext.CartItems.Update(existingItem);
             }
             else
             {
                 var cartItem = new CartItem
                 {
-                    ArticleId = article.ArticleId,
-                    Quantity = 1,
-                    Article = article // Optional, wenn Navigationseigenschaften genutzt werden
+                    user = user,
+                    Quantity = quantity,
+                    Article = article
                 };
                 await _dbContext.CartItems.AddAsync(cartItem);
             }
+
             await _dbContext.SaveChangesAsync();
             await LoadCartAsync();
         }
 
-        // Entfernen eines Artikels aus dem Warenkorb
+        // Artikel aus dem Warenkorb entfernen
         public async Task RemoveFromCartAsync(CartItem cartItem)
         {
-            if (cartItem.Quantity > 1)
+            var item = await _dbContext.CartItems.FindAsync(cartItem.CartItemId);
+            if (item == null) return;
+
+            if (item.Quantity > 1)
             {
-                cartItem.Quantity -= 1;
-                _dbContext.CartItems.Update(cartItem);
+                item.Quantity -= 1;
+                _dbContext.CartItems.Update(item);
             }
             else
             {
-                _dbContext.CartItems.Remove(cartItem);
+                _dbContext.CartItems.Remove(item);
             }
+
             await _dbContext.SaveChangesAsync();
             await LoadCartAsync();
         }
 
-        // Löschen des gesamten Warenkorbs
+        // Warenkorb leeren
         public async Task ClearCartAsync()
         {
             _dbContext.CartItems.RemoveRange(_dbContext.CartItems);

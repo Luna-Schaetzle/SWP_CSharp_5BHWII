@@ -1,4 +1,17 @@
-﻿using System.ComponentModel;
+﻿
+namespace API_Abfrage
+{
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+
+        }
+    }
+}
+
+/*
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
@@ -47,7 +60,7 @@ namespace API_Abfrage
                 Console.WriteLine("Passwort:");
                 string? password = Console.ReadLine();
                 apiKey = loginAsync(email, password).Result;
-                */
+                
                 Console.WriteLine("API Key:");
                 apiKey = Console.ReadLine();
                 Console.WriteLine($"API Key: {apiKey}");
@@ -178,12 +191,11 @@ namespace API_Abfrage
 
         }
 
-        static async Task<string?> RegisterAsync(string email, string password)
+        static async Task<string?> RegisterAsyncstring password)
         {
             User user = new User()
             {
-                UserId = 0,
-                Email = email,
+                Id = 0,
                 Password = password,
                 ApiKey = "null"
             };
@@ -274,3 +286,6 @@ namespace API_Abfrage
 
     }
 }
+
+*/
+

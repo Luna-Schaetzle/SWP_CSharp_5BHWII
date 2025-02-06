@@ -2,173 +2,214 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using WebAPI_5BHWII_Grundlagen.Models.DB;
 
 namespace WebAPI_5BHWII_Grundlagen.Controllers
 {
-    /*
-        Vorbereitungen
-
-        - EF Core installieren (EF Core, EF Core Tools, Pomelo)
-        - Klasse Article (ArticleId, Name, Price, ReleaseDate)
-        - DBManager programmieren
-        - Migrationen erzeugen 
-        - ca. 3 Artikel direkt in MySQL eintragen
-
-        WebAPI
-        - 
-
-    */
-
-
-
     [Route("api/[controller]")]
     [ApiController]
     public class ShopController : ControllerBase
     {
+        private readonly DBManager _dbManager;
 
-        //vorbereitung (DB) - DI (Dependency Injection)
-        private DBManager _dbManager;
-
-        //hier wird vom DI-Container die von ihm erzeugte Instanz an den ctor übergeben und wir können auf die 
-        //DB zugreifen.
         public ShopController(DBManager dbManager)
         {
-            this._dbManager = dbManager;
+            _dbManager = dbManager;
         }
 
         private async Task<bool> CheckApiKey(string apiKey)
         {
             var user = await _dbManager.Users.FirstOrDefaultAsync(u => u.ApiKey == apiKey);
-            if(user == null){
-                return false;
-            }
-            return true;
+            return user != null;
         }
 
-        //#############
-        //Article Funktionen
-        //#############
+        //###################
+        // Article Funktionen
+        //###################
 
-        [HttpGet("articles")] 
+        [HttpGet("articles")]
         public async Task<IActionResult> GetArticles(string apiKey)
-        {   
-            // 1. API Key überprüfen
-            // 2. Wenn der API Key nicht stimmt, dann Fehlermeldung zurückgeben
-            // 3. Wenn der API Key stimmt, dann alle Artikel aus der DB holen und zurückgeben
-            // 4. Artikel in Json umwandeln und zurückgeben
-            if(!await CheckApiKey(apiKey)){
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            return new JsonResult(await _dbManager.Articles.ToListAsync());
+
+            var articles = await _dbManager.Articles.ToListAsync();
+            return Ok(articles);
         }
 
         [HttpGet("article/{id:int}")]
         public async Task<IActionResult> GetArticle(int id, string apiKey)
         {
-            // 1. Artikel mit der ID aus der DB holen
-            // 2. Artikel nach Json umwandeln und zurückliefern
-            // 3. API Key überprüfen
-            if(!await CheckApiKey(apiKey)){
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            return new JsonResult(await _dbManager.Articles.FindAsync(id));
+
+            var article = await _dbManager.Articles.FindAsync(id);
+            if (article == null)
+            {
+                return NotFound("Article not found.");
+            }
+
+            return Ok(article);
         }
 
-        //einen artikel löschen per ID
-        [HttpDelete("article/{id:int}")]
-        public async Task<IActionResult> DelArticle(int id, string apiKey){
-            if(!await CheckApiKey(apiKey)){
-                return BadRequest("API Key not valid");
-            }
-            var articleToDel = await _dbManager.Articles.FindAsync(id);
-            var erfolg = _dbManager.Articles.Remove(articleToDel);
-            await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
-        }
-        //einen neuen Artikel erzeugen 
         [HttpPost("article")]
-        public async Task<IActionResult> AddArticle(Article article, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        public async Task<IActionResult> AddArticle(Article article, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            var erfolg = await _dbManager.Articles.AddAsync(article);
+
+            if (article == null)
+            {
+                return BadRequest("Invalid article data.");
+            }
+
+            await _dbManager.Articles.AddAsync(article);
             await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
+            return Ok("Article added successfully.");
         }
 
-        //einen anderen Artikel ändern 
         [HttpPut("article")]
-        public async Task<IActionResult> UpdateArticle(Article article, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        public async Task<IActionResult> UpdateArticle(Article article, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            //var articleToUpdate = 
-            var articleToUpdate = await _dbManager.Articles.FindAsync(article.ArticleId);
-            articleToUpdate.Name = article.Name;
-            articleToUpdate.Price = article.Price;
-            articleToUpdate.ReleaseDate = article.ReleaseDate;
-            var erfolg = _dbManager.Articles.Update(articleToUpdate);
+
+            var existingArticle = await _dbManager.Articles.FindAsync(article.ArticleId);
+            if (existingArticle == null)
+            {
+                return NotFound("Article not found.");
+            }
+
+            existingArticle.Name = article.Name;
+            existingArticle.Price = article.Price;
+            existingArticle.ReleaseDate = article.ReleaseDate;
+
+            _dbManager.Articles.Update(existingArticle);
             await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
+            return Ok("Article updated successfully.");
+        }
+
+        [HttpDelete("article/{id:int}")]
+        public async Task<IActionResult> DelArticle(int id, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
+                return BadRequest("API Key not valid");
+            }
+
+            var article = await _dbManager.Articles.FindAsync(id);
+            if (article == null)
+            {
+                return NotFound("Article not found.");
+            }
+
+            _dbManager.Articles.Remove(article);
+            await _dbManager.SaveChangesAsync();
+            return Ok("Article deleted successfully.");
         }
 
         //###################
-        //Basket Funktionen
+        // Basket Funktionen
         //###################
 
-        //alle Artikel aus dem Basket eines Users holen
         [HttpGet("basket/{userId:int}")]
-        public async Task<IActionResult> GetBasket(int userId, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        public async Task<IActionResult> GetBasket(int userId, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
-            return new JsonResult(basket);
+
+            var baskets = await _dbManager.Baskets
+                .Include(b => b.article)
+                .Where(b => b.user.Id == userId)
+                .ToListAsync();
+
+            if (!baskets.Any())
+            {
+                return NotFound("No articles found in the basket for the given user.");
+            }
+
+            return Ok(baskets);
         }
 
-        //einen Artikel in den Basket eines Users hinzufügen
         [HttpPost("basket")]
-        public async Task<IActionResult> AddToBasket(Basket basket, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        public async Task<IActionResult> AddToBasket([FromBody] Basket basket, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            var erfolg = await _dbManager.Baskets.AddAsync(basket);
+
+            if (basket == null || basket.user == null || basket.article == null)
+            {
+                return BadRequest("Invalid basket data provided.");
+            }
+
+            var existingBasket = await _dbManager.Baskets
+                .FirstOrDefaultAsync(b => b.user.Id == basket.user.Id && b.article.ArticleId == basket.article.ArticleId);
+
+            if (existingBasket != null)
+            {
+                return Conflict("The article is already in the basket.");
+            }
+
+            await _dbManager.Baskets.AddAsync(basket);
             await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
+            return Ok("Article added to the basket successfully.");
         }
 
-        //einen Artikel aus dem Basket eines Users löschen
-        [HttpDelete("basket/{userId:int}")]
-        public async Task<IActionResult> DelFromBasket(int userId, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        [HttpDelete("basket/{userId:int}/{articleId:int}")]
+        public async Task<IActionResult> DelFromBasket(int userId, int articleId, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
-            var erfolg = _dbManager.Baskets.Remove(basket);
+
+            var basket = await _dbManager.Baskets
+                .FirstOrDefaultAsync(b => b.user.Id == userId && b.article.ArticleId == articleId);
+
+            if (basket == null)
+            {
+                return NotFound("Article not found in the basket for the given user.");
+            }
+
+            _dbManager.Baskets.Remove(basket);
             await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
+            return Ok("Article removed from the basket successfully.");
         }
 
-        //###################
-        //Einkaufs Funktionen
-        //###################
-
-        //"Einkaufen" - alle Artikel aus dem Basket eines Users kaufen
         [HttpPost("basket/buy/{userId:int}")]
-        public async Task<IActionResult> BuyBasket(int userId, string apiKey){
-            if(!await CheckApiKey(apiKey)){
+        public async Task<IActionResult> BuyBasket(int userId, string apiKey)
+        {
+            if (!await CheckApiKey(apiKey))
+            {
                 return BadRequest("API Key not valid");
             }
-            var basket = await _dbManager.Baskets.Include(b => b.Articles).FirstOrDefaultAsync(b => b.user.UserId == userId);
-            var erfolg = _dbManager.Baskets.Remove(basket);
+
+            var baskets = await _dbManager.Baskets
+                .Where(b => b.user.Id == userId)
+                .ToListAsync();
+
+            if (!baskets.Any())
+            {
+                return NotFound("No articles found in the basket to purchase.");
+            }
+
+            _dbManager.Baskets.RemoveRange(baskets);
             await _dbManager.SaveChangesAsync();
-            return new JsonResult(erfolg);
+            return Ok("Basket purchased successfully.");
         }
-
-
-
     }
 }

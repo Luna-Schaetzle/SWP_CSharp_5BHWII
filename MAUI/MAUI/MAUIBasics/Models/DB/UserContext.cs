@@ -13,19 +13,11 @@ namespace MAUIBasics.Models.DB
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Article> Articles { get; set; } // Optional, falls du Artikel lokal speichern möchtest
 
-        public UserContext()
-        {
-            SQLitePCL.Batteries_V2.Init();
-
-            this.Database.EnsureCreated();
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "users.db3");
-
-            optionsBuilder
-                .UseSqlite($"Filename={dbPath}");
+            var databasePath = Path.Combine(FileSystem.AppDataDirectory, "cart.db");
+            optionsBuilder.UseSqlite($"Data Source={databasePath}");
         }
 
 

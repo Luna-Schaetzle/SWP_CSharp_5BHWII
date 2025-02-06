@@ -1,5 +1,6 @@
 ﻿//using Android.Hardware.Camera2;
 using MAUIBasics.Models.DB;
+using MAUIBasics.Services;
 using MAUIBasics.ViewModels;
 using MAUIBasics.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,12 +27,14 @@ namespace MAUIBasics
             // Registrierung von UserContext als Singleton
             builder.Services.AddSingleton<UserContext>();
 
+
             // Registrierung von ViewModels
-            
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddDbContext<UserContext>(ServiceLifetime.Singleton);
+
 
             return builder.Build();
         }
@@ -41,6 +44,10 @@ namespace MAUIBasics
             mauiAppBuilder.Services.AddTransient<Registrierungsformular>();
             mauiAppBuilder.Services.AddTransient<LoginPage>();
             mauiAppBuilder.Services.AddTransient<ShopPage>();
+            mauiAppBuilder.Services.AddTransient<MainPage>();
+            mauiAppBuilder.Services.AddTransient<CartPage>();
+
+
 
             return mauiAppBuilder;
         }
@@ -50,6 +57,8 @@ namespace MAUIBasics
             mauiAppBuilder.Services.AddTransient<RegistrationPageViewModels>();
             mauiAppBuilder.Services.AddTransient<LoginPageViewModels>();
             mauiAppBuilder.Services.AddTransient<ShopPageViewModel>();
+            mauiAppBuilder.Services.AddTransient<MainPageViewModel>();
+            mauiAppBuilder.Services.AddTransient<CartPageViewModel>();
 
             return mauiAppBuilder;
         }
@@ -57,7 +66,8 @@ namespace MAUIBasics
         public static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<UserContext>();
-
+            mauiAppBuilder.Services.AddSingleton<IUserService, UserService>();
+            mauiAppBuilder.Services.AddSingleton<ICartService, CartService>();
             return mauiAppBuilder;
         }
 

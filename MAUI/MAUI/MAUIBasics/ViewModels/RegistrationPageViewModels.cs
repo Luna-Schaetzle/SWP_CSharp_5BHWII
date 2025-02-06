@@ -1,17 +1,28 @@
 ﻿using System;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MAUIBasics.Models.DB; // Namespace für UserContext
-using MAUIBasics.Models; // Namespace für User
-using Microsoft.Maui.Controls; // Für Shell.Current.DisplayAlert
-using BCrypt.Net; // Für BCrypt-Hashing
+using MAUIBasics.Models;
+using Microsoft.Maui.Controls;
 
 namespace MAUIBasics.ViewModels
 {
     public partial class RegistrationPageViewModels : ObservableObject
     {
-        // Alle Felder der View
+        private readonly HttpClient _httpClient;
+        private const string ApiBaseUrl = "https://localhost:7243/api/User"; // Ändern Sie dies zu Ihrer API-URL
+        private const string ApiKey = "2602beb8-013f-4d6b-9451-22c2e549875d";
+
+        public RegistrationPageViewModels()
+        {
+            _httpClient = new HttpClient
+                {
+        BaseAddress = new Uri(ApiBaseUrl)
+    };
+
+        }
 
         [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
@@ -41,23 +52,21 @@ namespace MAUIBasics.ViewModels
         [ObservableProperty]
         private string _city;
 
-        // Commands
-        /*public RegistrationPageViewModels(UserContext context)
-        {
-            _context = context;
-        }*/
-    
+        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        [ObservableProperty]
+        private string _email;
 
         [RelayCommand]
         public void ResetRegistrationForm()
         {
-            this.Name = string.Empty;
-            this.Password = string.Empty;
-            this.Birthdate = DateTime.Today;
-            this.Street = string.Empty;
-            this.HouseNumber = string.Empty;
-            this.PostalCode = string.Empty;
-            this.City = string.Empty;
+            Name = string.Empty;
+            Email = string.Empty;
+            Password = string.Empty;
+            Birthdate = DateTime.Today;
+            Street = string.Empty;
+            HouseNumber = string.Empty;
+            PostalCode = string.Empty;
+            City = string.Empty;
         }
 
         [RelayCommand]
@@ -71,55 +80,42 @@ namespace MAUIBasics.ViewModels
         {
             try
             {
-                // Passwort hashen
-                string hashedPassword = HashPassword(this.Password);
-
-                // Benutzerobjekt erstellen
                 var user = new User
                 {
-                    Name = this.Name,
-                    PasswordHash = hashedPassword,
-                    Birthdate = this.Birthdate,
-                    Street = this.Street,
-                    HouseNumber = this.HouseNumber,
-                    PostalCode = this.PostalCode,
-                    City = this.City
+                    Email = Email,
+                    Name = Name,
+                    Password = Password,
+                    Birthdate = Birthdate,
+                    Street = Street,
+                    HouseNumber = HouseNumber,
+                    PostalCode = PostalCode,
+                    City = City
                 };
 
-                // Datenbank speichern
-                using (var context = new UserContext())
+                var response = await _httpClient.PostAsJsonAsync($"{ApiBaseUrl}/Register?apiKey={ApiKey}", user);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    context.Users.Add(user);
-                    await context.SaveChangesAsync();
+                    var apiKey = await response.Content.ReadAsStringAsync();
+                    // Speichern Sie den API-Key lokal, falls benötigt
+                    await Shell.Current.DisplayAlert("Erfolg", "Registrierung erfolgreich!", "OK");
+                    ResetRegistrationForm();
+                    await GoBackToMain();
                 }
-
-                // Bestätigung anzeigen
-                await Shell.Current.DisplayAlert("Erfolg", "Registrierung erfolgreich!", "OK");
-
-                // Formular zurücksetzen
-                ResetRegistrationForm();
-
-                // Zur Hauptseite zurückkehren
-                await GoBackToMain();
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    await Shell.Current.DisplayAlert("Fehler", $"Registrierung fehlgeschlagen: {errorMessage}", "OK");
+                }
             }
             catch (Exception ex)
             {
-                // Fehlerbehandlung
                 await Shell.Current.DisplayAlert("Fehler", $"Registrierung fehlgeschlagen: {ex.Message}", "OK");
             }
         }
 
         private bool ValidateRegistrationForm()
         {
-            // Kriterien:
-            // - Name ist kein Pflichtfeld, aber wenn etwas eingegeben wurde, muss es mindestens 2 Zeichen lang sein.
-            // - Password ist ein Pflichtfeld und muss mindestens 8 Zeichen lang sein.
-            // - Birthdate ist kein Pflichtfeld, aber wenn etwas eingegeben wurde, muss es in der Vergangenheit liegen.
-            // - Street ist ein Pflichtfeld und muss mindestens 2 Zeichen lang sein.
-            // - HouseNumber ist ein Pflichtfeld.
-            // - PostalCode ist ein Pflichtfeld und muss mindestens 3 Zeichen lang sein.
-            // - City ist ein Pflichtfeld und muss mindestens 2 Zeichen lang sein.
-
             if (!string.IsNullOrWhiteSpace(Name) && Name.Trim().Length < 2)
             {
                 return false;
@@ -155,14 +151,12 @@ namespace MAUIBasics.ViewModels
                 return false;
             }
 
-            return true;
-        }
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                return false;
+            }
 
-        // Passwort-Hashing-Methode
-        private string HashPassword(string password)
-        {
-            // Verwende eine sichere Hashing-Bibliothek wie BCrypt
-            return BCrypt.Net.BCrypt.HashPassword(password);
+            return true;
         }
     }
 }

@@ -1,23 +1,28 @@
 using System;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MAUIBasics.Models.DB; // Namespace f�r UserContext
-using MAUIBasics.Models; // Namespace f�r User
-using Microsoft.Maui.Controls; // F�r Shell.Current.DisplayAlert
-using Microsoft.EntityFrameworkCore; // F�r EF Core Erweiterungsmethoden wie FirstOrDefaultAsync
-using BCrypt.Net; // F�r BCrypt-Hashing
+using MAUIBasics.Models;
+using Microsoft.Maui.Controls;
+using MAUIBasics.Services;
 
 namespace MAUIBasics.ViewModels
 {
     public partial class LoginPageViewModels : ObservableObject
     {
-    
+        private readonly HttpClient _httpClient;
+        private readonly IUserService _userService;
 
-        // Konstruktor mit Dependency Injection
-        // Konstruktor mit Dependency Injection
+        private const string ApiBaseUrl = "https://localhost:7243/api/User"; // Ändern Sie dies zu Ihrer API-URL
+        private const string ApiKey = "2602beb8-013f-4d6b-9451-22c2e549875d";
+        public LoginPageViewModels(IUserService userService)
+        {
+            _httpClient = new HttpClient();
+            _userService = userService;
 
-        // Alle Felder der View
+        }
 
         [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
         [ObservableProperty]
@@ -27,84 +32,54 @@ namespace MAUIBasics.ViewModels
         [ObservableProperty]
         private string _password;
 
-        // Commands
-
-        /// <summary>
-        /// Command zum Zur�cksetzen des Login-Formulars.
-        /// </summary>
         [RelayCommand]
         public void ResetLoginForm()
         {
-            this.Name = string.Empty;
-            this.Password = string.Empty;
+            Name = string.Empty;
+            Password = string.Empty;
         }
 
-        /// <summary>
-        /// Command zum Ausf�hren des Logins.
-        /// Dieser Command ist nur ausf�hrbar, wenn das Formular g�ltig ist.
-        /// </summary>
         [RelayCommand(CanExecute = nameof(ValidateLoginForm))]
         public async Task LoginAsync()
         {
             try
             {
-                //Datenbank Abfrage
-                using var _userContext = new UserContext();
+                var response = await _httpClient.GetAsync(
+                    $"{ApiBaseUrl}/Login?name={Uri.EscapeDataString(Name)}&password={Uri.EscapeDataString(Password)}&apiKey={ApiKey}");
 
-                // Suche den Benutzer in der Datenbank
-                //var user = await _userContext.Users.FirstOrDefaultAsync(u => u.Name.Equals(this.Name, StringComparison.OrdinalIgnoreCase));
-                var user = await _userContext.Users.FirstOrDefaultAsync(u => u.Name.Equals(this.Name));
-                if (user == null)
+                if (response.IsSuccessStatusCode)
                 {
-                    // Benutzername nicht gefunden
-                    await Shell.Current.DisplayAlert("Fehler", "Benutzername existiert nicht.", "OK");
-                    return;
+                    var user = await response.Content.ReadFromJsonAsync<User>();
+
+                    if (user != null)
+                    {
+                        // Debugging-Ausgabe hinzufügen
+                        Console.WriteLine($"Login successful for user: {user.Name}");
+
+                        _userService.CurrentUser = user; // Hier wird der User gesetzt
+
+                        await Shell.Current.DisplayAlert("Erfolg", $"Login erfolgreich! Mit Name: {user.Name}", "OK");
+                        ResetLoginForm();
+                        //_userService.CurrentUser = user;
+                        //await Task.Delay(100); // Kurze Verzögerung
+                        await Shell.Current.GoToAsync("//MainPage");
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Fehler", "Ungültige Antwort vom Server", "OK");
+                    }
                 }
-
-                // �berpr�fe das Passwort
-                bool isPasswordValid = VerifyPassword(this.Password, user.PasswordHash);
-
-                if (!isPasswordValid)
-                {
-                    // Passwort ist falsch
-                    await Shell.Current.DisplayAlert("Fehler", "Falsches Passwort.", "OK");
-                    return;
-                }
-
-                // Erfolgreicher Login
-                await Shell.Current.DisplayAlert("Erfolg", "Login erfolgreich! Mit Name: " + user.Name, "OK");
-
-                // Formular zur�cksetzen
-                ResetLoginForm();
-
-                // Navigation zur Hauptseite oder einer anderen Seite
-                await Shell.Current.GoToAsync("//MainPage");
+                // ... Rest des Codes bleibt gleich ...
             }
             catch (Exception ex)
             {
-                // Fehlerbehandlung
                 await Shell.Current.DisplayAlert("Fehler", $"Login fehlgeschlagen: {ex.Message}", "OK");
             }
         }
 
-        /// <summary>
-        /// Validierung des Login-Formulars.
-        /// </summary>
-        /// <returns>True, wenn das Formular g�ltig ist; andernfalls False.</returns>
         private bool ValidateLoginForm()
         {
             return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Password);
-        }
-
-        /// <summary>
-        /// Methode zur �berpr�fung des Passworts mit dem gehashten Passwort.
-        /// </summary>
-        /// <param name="password">Das eingegebene Passwort.</param>
-        /// <param name="hashedPassword">Das gehashte Passwort aus der Datenbank.</param>
-        /// <returns>True, wenn das Passwort korrekt ist; andernfalls False.</returns>
-        private bool VerifyPassword(string password, string hashedPassword)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }
     }
 }

@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MAUIBasics.Models;
 using Microsoft.Maui.Controls;
-using MAUIBasics.Services; // Add this line if IUserService is in the MAUIBasics.Services namespace
+using MAUIBasics.Services;
 
 namespace MAUIBasics.ViewModels
 {
@@ -14,83 +14,73 @@ namespace MAUIBasics.ViewModels
     {
         private readonly HttpClient _httpClient;
         private readonly IUserService _userService;
+        private readonly ICartService _cartService;
         private const string ApiKey = "2602beb8-013f-4d6b-9451-22c2e549875d";
         private const string ApiUrlArticles = "https://localhost:7243/api/shop/articles";
-        private const string ApiUrlBasket = "https://localhost:7243/api/shop/basket";
 
         [ObservableProperty]
         private ObservableCollection<Article> articles;
 
         [ObservableProperty]
-        private ObservableCollection<Basket> basket;
+        private ObservableCollection<CartItem> basket;
 
         [ObservableProperty]
         private bool isUserLoggedIn;
 
-        public ShopPageViewModel(IUserService userService)
+        public ShopPageViewModel(IUserService userService, ICartService cartService)
         {
             _userService = userService;
-            Articles = new ObservableCollection<Article>();
-            Basket = new ObservableCollection<Basket>();
+            _cartService = cartService;
             _httpClient = new HttpClient();
-            
+            Articles = new ObservableCollection<Article>();
+            Basket = new ObservableCollection<CartItem>();
+
             IsUserLoggedIn = _userService.IsLoggedIn;
-            
-            // Auf Änderungen des Login-Status reagieren
+
             if (_userService is UserService service)
             {
-                service.UserChanged += (s, user) =>
+                service.UserChanged += async (s, user) =>
                 {
                     IsUserLoggedIn = user != null;
-                    LoadBasketAsync().ConfigureAwait(false);
+                    await LoadBasketAsync();
                 };
             }
-            
-            LoadArticlesAsync();
+
+            // Parallel: Artikel abrufen & Warenkorb laden
+            Task.Run(async () => await Task.WhenAll(LoadArticlesAsync(), LoadBasketAsync()));
         }
 
+        // 🛒 Artikel in den lokalen Warenkorb speichern
         [RelayCommand]
-        private async Task AddToCartAsync(Article selectedArticle)
-        {
-            if (!_userService.IsLoggedIn)
-            {
-                await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
-                return;
-            }
+private async Task AddToCartAsync(Article selectedArticle)
+{
+    if (!_userService.IsLoggedIn)
+    {
+        await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
+        return;
+    }
 
-            if (selectedArticle == null)
-            {
-                await Shell.Current.DisplayAlert("Fehler", "Kein Artikel ausgewählt.", "OK");
-                return;
-            }
+    if (selectedArticle == null)
+    {
+        await Shell.Current.DisplayAlert("Fehler", "Kein Artikel ausgewählt.", "OK");
+        return;
+    }
 
-            try
-            {
-                var basketItem = new Basket
-                {
-                    BasketId = 0,
-                    user = _userService.CurrentUser, // Aktueller User aus dem UserService
-                    article = selectedArticle
-                };
-
-                var response = await _httpClient.PostAsJsonAsync($"{ApiUrlBasket}?apiKey={ApiKey}", basketItem);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
-                    await LoadBasketAsync(); // Warenkorb neu laden
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Fehler", "Fehler beim Hinzufügen des Artikels zum Warenkorb.", "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
-            }
-        }
-
+    try
+    {
+        var user = _userService.CurrentUser;
+        await _cartService.AddToCartAsync(selectedArticle, user, 1);
+        await LoadBasketAsync();
+        await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERROR] AddToCartAsync: {ex.Message}");
+        await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+    }
+}
+    
+        // 🛍️ Lokalen Warenkorb aus JSON laden
         [RelayCommand]
         private async Task LoadBasketAsync()
         {
@@ -102,30 +92,19 @@ namespace MAUIBasics.ViewModels
 
             try
             {
-                var userId = _userService.CurrentUser.Id;
-                var response = await _httpClient.GetAsync($"{ApiUrlBasket}/{userId}?apiKey={ApiKey}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var basketList = await response.Content.ReadFromJsonAsync<List<Basket>>();
-                    if (basketList != null)
-                    {
-                        Basket = new ObservableCollection<Basket>(basketList);
-                    }
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Fehler", "Fehler beim Laden des Warenkorbs.", "OK");
-                }
+                await _cartService.LoadCartAsync();
+                Basket = new ObservableCollection<CartItem>(_cartService.Cart);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+                Console.WriteLine($"[ERROR] LoadBasketAsync: {ex.Message}");
+                await Shell.Current.DisplayAlert("Fehler", $"Fehler beim Laden des Warenkorbs: {ex.Message}", "OK");
             }
         }
 
+        // 🛒 Warenkorb leeren
         [RelayCommand]
-        private async Task BuyBasketAsync()
+        private async Task ClearCartAsync()
         {
             if (!_userService.IsLoggedIn)
             {
@@ -135,25 +114,18 @@ namespace MAUIBasics.ViewModels
 
             try
             {
-                var userId = _userService.CurrentUser.Id;
-                var response = await _httpClient.PostAsync($"{ApiUrlBasket}/buy/{userId}?apiKey={ApiKey}", null);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    Basket.Clear();
-                    await Shell.Current.DisplayAlert("Erfolg", "Warenkorb erfolgreich gekauft.", "OK");
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Fehler", "Fehler beim Kaufen des Warenkorbs.", "OK");
-                }
+                await _cartService.ClearCartAsync();
+                Basket.Clear();
+                await Shell.Current.DisplayAlert("Erfolg", "Warenkorb wurde geleert.", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+                Console.WriteLine($"[ERROR] ClearCartAsync: {ex.Message}");
+                await Shell.Current.DisplayAlert("Fehler", $"Fehler beim Leeren des Warenkorbs: {ex.Message}", "OK");
             }
         }
 
+        // 📦 API-Artikel abrufen
         private async Task LoadArticlesAsync()
         {
             try
@@ -175,6 +147,7 @@ namespace MAUIBasics.ViewModels
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[ERROR] LoadArticlesAsync: {ex.Message}");
                 await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
             }
         }

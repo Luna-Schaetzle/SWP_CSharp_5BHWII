@@ -1,94 +1,132 @@
-using MAUIBasics.Models.DB;
-using MAUIBasics.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Text.Json;
+using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Maui.Storage;
+using MAUIBasics.Models;
 
 namespace MAUIBasics.Services
 {
     public class CartService : ICartService
     {
-        private readonly UserContext _dbContext;
-
+        private const string CartFileName = "cart.json"; // JSON-Datei für lokale Speicherung
+        private readonly string CartFilePath = Path.Combine(FileSystem.AppDataDirectory, CartFileName);
         public ObservableCollection<CartItem> Cart { get; }
 
-        public CartService(UserContext dbContext)
+        public CartService()
         {
-            _dbContext = dbContext;
             Cart = new ObservableCollection<CartItem>();
-            InitializeDatabase();
+            LoadCartAsync();
         }
 
-        // Initialisiert die SQLite-Datenbank
-        private async void InitializeDatabase()
-        {
-            await _dbContext.Database.EnsureCreatedAsync();
-            await LoadCartAsync();
-        }
-
-        // Laden des Warenkorbs aus SQLite
+        // 📌 Warenkorb aus JSON-Datei oder Preferences laden
         public async Task LoadCartAsync()
         {
-            var cartItems = await _dbContext.CartItems.Include(c => c.Article).ToListAsync();
-            Cart.Clear();
-            foreach (var item in cartItems)
+            try
             {
-                Cart.Add(item);
+                if (File.Exists(CartFilePath))
+                {
+                    string json = await File.ReadAllTextAsync(CartFilePath);
+                    var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
+
+                    if (cartItems != null)
+                    {
+                        Cart.Clear();
+                        foreach (var item in cartItems)
+                        {
+                            Cart.Add(item);
+                        }
+                    }
+                }
+                else
+                {
+                    // Falls keine Datei existiert, alten Stand aus Preferences laden
+                    string json = Preferences.Get("CartData", string.Empty);
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
+                        if (cartItems != null)
+                        {
+                            Cart.Clear();
+                            foreach (var item in cartItems)
+                            {
+                                Cart.Add(item);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Fehlerhafte Daten oder Datei nicht gefunden -> Warenkorb zurücksetzen
+                Cart.Clear();
             }
         }
 
-        // Artikel zum Warenkorb hinzufügen
+        // 🛒 Artikel zum Warenkorb hinzufügen
         public async Task AddToCartAsync(Article article, User user, int quantity)
         {
-            var existingItem = await _dbContext.CartItems
-                .FirstOrDefaultAsync(c => c.Article.ArticleId == article.ArticleId && c.user.UserId == user.UserId);
+            var existingItem = Cart.FirstOrDefault(c => c.Article.ArticleId == article.ArticleId && c.user.Id == user.Id);
 
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
-                _dbContext.CartItems.Update(existingItem);
             }
             else
             {
-                var cartItem = new CartItem
+                Cart.Add(new CartItem
                 {
                     user = user,
                     Quantity = quantity,
                     Article = article
-                };
-                await _dbContext.CartItems.AddAsync(cartItem);
+                });
             }
 
-            await _dbContext.SaveChangesAsync();
-            await LoadCartAsync();
+            await SaveCartAsync();
         }
 
-        // Artikel aus dem Warenkorb entfernen
+        // ❌ Artikel aus dem Warenkorb entfernen
         public async Task RemoveFromCartAsync(CartItem cartItem)
         {
-            var item = await _dbContext.CartItems.FindAsync(cartItem.CartItemId);
+            var item = Cart.FirstOrDefault(c => c.CartItemId == cartItem.CartItemId);
             if (item == null) return;
 
             if (item.Quantity > 1)
             {
                 item.Quantity -= 1;
-                _dbContext.CartItems.Update(item);
             }
             else
             {
-                _dbContext.CartItems.Remove(item);
+                Cart.Remove(item);
             }
 
-            await _dbContext.SaveChangesAsync();
-            await LoadCartAsync();
+            await SaveCartAsync();
         }
 
-        // Warenkorb leeren
+        // 🗑️ Warenkorb leeren
         public async Task ClearCartAsync()
         {
-            _dbContext.CartItems.RemoveRange(_dbContext.CartItems);
-            await _dbContext.SaveChangesAsync();
             Cart.Clear();
+            await SaveCartAsync();
+        }
+
+        // 💾 Warenkorb in JSON-Datei und Preferences speichern
+        private async Task SaveCartAsync()
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(Cart.ToList());
+
+                // JSON-Datei speichern
+                await File.WriteAllTextAsync(CartFilePath, json);
+
+                // Auch in Preferences speichern (Fallback)
+                Preferences.Set("CartData", json);
+            }
+            catch
+            {
+                // Fehler beim Speichern
+            }
         }
     }
 }

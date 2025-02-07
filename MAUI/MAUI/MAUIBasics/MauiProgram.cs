@@ -26,6 +26,8 @@ namespace MAUIBasics
 
             // Registrierung von UserContext als Singleton
             builder.Services.AddSingleton<UserContext>();
+            builder.Services.AddSingleton<ICartService, CartService>();
+
 
 
             // Registrierung von ViewModels

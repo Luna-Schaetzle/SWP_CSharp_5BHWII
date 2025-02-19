@@ -52,34 +52,34 @@ namespace MAUIBasics.ViewModels
 
         // 🛒 Artikel in den lokalen Warenkorb speichern
         [RelayCommand]
-private async Task AddToCartAsync(Article selectedArticle)
-{
-    if (!_userService.IsLoggedIn)
-    {
-        await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
-        return;
-    }
+        private async Task AddToCartAsync(Article selectedArticle)
+        {
+            if (!_userService.IsLoggedIn)
+            {
+                await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
+                return;
+            }
 
-    if (selectedArticle == null)
-    {
-        await Shell.Current.DisplayAlert("Fehler", "Kein Artikel ausgewählt.", "OK");
-        return;
-    }
+            if (selectedArticle == null)
+            {
+                await Shell.Current.DisplayAlert("Fehler", "Kein Artikel ausgewählt.", "OK");
+                return;
+            }
 
-    try
-    {
-        var user = _userService.CurrentUser;
-        await _cartService.AddToCartAsync(selectedArticle, user, 1);
-        await LoadBasketAsync();
-        await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[ERROR] AddToCartAsync: {ex.Message}");
-        await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
-    }
-}
-    
+            try
+            {
+                var user = _userService.CurrentUser;
+                await _cartService.AddToCartAsync(selectedArticle, user, 1);
+                await LoadBasketAsync();
+                await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] AddToCartAsync: {ex.Message}");
+                await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
+            }
+        }
+
         // 🛍️ Lokalen Warenkorb aus JSON laden
         [RelayCommand]
         private async Task LoadBasketAsync()

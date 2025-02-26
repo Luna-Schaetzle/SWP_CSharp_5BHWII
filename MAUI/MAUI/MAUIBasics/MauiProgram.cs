@@ -68,8 +68,8 @@ namespace MAUIBasics
         public static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<UserContext>();
-            mauiAppBuilder.Services.AddSingleton<IUserService>();
-            mauiAppBuilder.Services.AddSingleton<ICartService>();
+            mauiAppBuilder.Services.AddSingleton<IUserService, UserService>();
+            mauiAppBuilder.Services.AddSingleton<ICartService, CartService>();
             return mauiAppBuilder;
         }
 

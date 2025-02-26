@@ -19,7 +19,7 @@ namespace MAUIBasics.Services
             LoadCartAsync();
         }
 
-        // 📌 Warenkorb aus JSON-Datei oder Preferences laden
+        // Warenkorb aus JSON-Datei oder Preferences laden
         public async Task LoadCartAsync()
         {
             try
@@ -63,7 +63,7 @@ namespace MAUIBasics.Services
             }
         }
 
-        // 🛒 Artikel zum Warenkorb hinzufügen
+        // Artikel zum Warenkorb hinzufügen
         public async Task AddToCartAsync(Article article, User user, int quantity)
         {
             var existingItem = Cart.FirstOrDefault(c => c.Article.ArticleId == article.ArticleId && c.user.Id == user.Id);
@@ -85,7 +85,7 @@ namespace MAUIBasics.Services
             await SaveCartAsync();
         }
 
-        // ❌ Artikel aus dem Warenkorb entfernen
+        // Artikel aus dem Warenkorb entfernen
         public async Task RemoveFromCartAsync(CartItem cartItem)
         {
             var item = Cart.FirstOrDefault(c => c.CartItemId == cartItem.CartItemId);
@@ -110,7 +110,7 @@ namespace MAUIBasics.Services
             await SaveCartAsync();
         }
 
-        // 💾 Warenkorb in JSON-Datei und Preferences speichern
+        // Warenkorb in JSON-Datei und Preferences speichern
         private async Task SaveCartAsync()
         {
             try

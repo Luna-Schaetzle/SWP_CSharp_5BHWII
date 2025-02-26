@@ -42,18 +42,19 @@ namespace MAUIBasics.ViewModels
                 service.UserChanged += async (s, user) =>
                 {
                     IsUserLoggedIn = user != null;
-                    await LoadBasketAsync();
                 };
             }
 
             // Parallel: Artikel abrufen & Warenkorb laden
-            Task.Run(async () => await Task.WhenAll(LoadArticlesAsync(), LoadBasketAsync()));
+            Task.Run(async () => await Task.WhenAll(LoadArticlesAsync()));
         }
 
-        // 🛒 Artikel in den lokalen Warenkorb speichern
+        // Artikel in den lokalen Warenkorb speichern
         [RelayCommand]
         private async Task AddToCartAsync(Article selectedArticle)
         {
+            await Shell.Current.DisplayAlert("Info", "Artikel hinzugefügt", "OK");
+            
             if (!_userService.IsLoggedIn)
             {
                 await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
@@ -70,7 +71,6 @@ namespace MAUIBasics.ViewModels
             {
                 var user = _userService.CurrentUser;
                 await _cartService.AddToCartAsync(selectedArticle, user, 1);
-                await LoadBasketAsync();
                 await Shell.Current.DisplayAlert("Erfolg", $"{selectedArticle.Name} wurde zum Warenkorb hinzugefügt.", "OK");
             }
             catch (Exception ex)
@@ -80,52 +80,9 @@ namespace MAUIBasics.ViewModels
             }
         }
 
-        // 🛍️ Lokalen Warenkorb aus JSON laden
-        [RelayCommand]
-        private async Task LoadBasketAsync()
-        {
-            if (!_userService.IsLoggedIn)
-            {
-                Basket.Clear();
-                return;
-            }
+  
 
-            try
-            {
-                await _cartService.LoadCartAsync();
-                Basket = new ObservableCollection<CartItem>(_cartService.Cart);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ERROR] LoadBasketAsync: {ex.Message}");
-                await Shell.Current.DisplayAlert("Fehler", $"Fehler beim Laden des Warenkorbs: {ex.Message}", "OK");
-            }
-        }
-
-        // 🛒 Warenkorb leeren
-        [RelayCommand]
-        private async Task ClearCartAsync()
-        {
-            if (!_userService.IsLoggedIn)
-            {
-                await Shell.Current.DisplayAlert("Fehler", "Bitte melden Sie sich zuerst an.", "OK");
-                return;
-            }
-
-            try
-            {
-                await _cartService.ClearCartAsync();
-                Basket.Clear();
-                await Shell.Current.DisplayAlert("Erfolg", "Warenkorb wurde geleert.", "OK");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ERROR] ClearCartAsync: {ex.Message}");
-                await Shell.Current.DisplayAlert("Fehler", $"Fehler beim Leeren des Warenkorbs: {ex.Message}", "OK");
-            }
-        }
-
-        // 📦 API-Artikel abrufen
+        // API-Artikel abrufen
         private async Task LoadArticlesAsync()
         {
             try

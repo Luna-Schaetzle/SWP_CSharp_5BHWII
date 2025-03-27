@@ -48,6 +48,7 @@ namespace MAUIBasics
             mauiAppBuilder.Services.AddTransient<ShopPage>();
             mauiAppBuilder.Services.AddTransient<MainPage>();
             mauiAppBuilder.Services.AddTransient<CartPage>();
+            //mauiAppBuilder.Services.AddTransient<UserVerwaltung>();
 
 
 
@@ -61,6 +62,7 @@ namespace MAUIBasics
             mauiAppBuilder.Services.AddTransient<ShopPageViewModel>();
             mauiAppBuilder.Services.AddTransient<MainPageViewModel>();
             mauiAppBuilder.Services.AddTransient<CartPageViewModel>();
+            //mauiAppBuilder.Services.AddTransient<UserVerwaltungViewModel>();
 
             return mauiAppBuilder;
         }

@@ -11,14 +11,4 @@ public partial class Registrierungsformular : ContentPage
                 this.BindingContext = vm; 
 	}
 
-	   private async void OnRegisterClicked(object sender, EventArgs e)
-        {
-           
-        }
-
-        // Formular löschen (Felder leeren)
-        private void OnClearClicked(object sender, EventArgs e)
-        {
-
-        }
 }

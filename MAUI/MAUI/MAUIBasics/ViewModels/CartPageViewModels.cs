@@ -14,6 +14,8 @@ namespace MAUIBasics.ViewModels
         private readonly IUserService _userService;
         private readonly ICartService _cartService;
 
+        private User user;
+
         [ObservableProperty]
         private string _username;
 
@@ -22,6 +24,9 @@ namespace MAUIBasics.ViewModels
 
         [ObservableProperty]
         private decimal totalPrice;
+
+        [ObservableProperty]
+        private int _quantity;
 
         public CartPageViewModel(IUserService userService, ICartService cartService)
         {
@@ -60,8 +65,9 @@ namespace MAUIBasics.ViewModels
         // Warenkorb laden
         private async void LoadCart()
         {
-            await _cartService.LoadCartAsync();
+            await _cartService.LoadCartAsync(_userService.CurrentUser);
             Cart = _cartService.Cart;
+            Quantity = Cart.Count;
             CalculateTotalPrice();
         }
 
@@ -73,11 +79,20 @@ namespace MAUIBasics.ViewModels
 
         // Artikel aus dem Warenkorb entfernen
         [RelayCommand]
-        private async Task RemoveFromCartAsync(CartItem cartItem)
+        private async Task RemoveFromCart(CartItem cartItem)
         {
+            /*var founduser = Cart.FirstOrDefault(c => c.user.Id == _userService.CurrentUser.Id);
+            if (founduser == null) return;
+            else
+            {
+                await _cartService.RemoveFromCartAsync(cartItem);
+                CalculateTotalPrice();
+            }*/
+            //await Shell.Current.DisplayAlert("Info", $"Artikel {cartItem.Article.Name} entfernt", "OK");
             await _cartService.RemoveFromCartAsync(cartItem);
             CalculateTotalPrice();
         }
+
 
         // Warenkorb leeren
         [RelayCommand]
@@ -85,6 +100,24 @@ namespace MAUIBasics.ViewModels
         {
             await _cartService.ClearCartAsync();
             CalculateTotalPrice();
+        }
+
+        [RelayCommand]
+        private async Task CalculateTotalPriceButton()
+        {
+            CalculateTotalPrice();
+        }
+
+        [RelayCommand]
+        private async Task UpdateQuantity(CartItem cartItem){
+            await _cartService.UpdateQuantityAsync(cartItem);
+            CalculateTotalPrice();
+        }
+
+        [RelayCommand]
+        private async Task Checkout()
+        {
+            await Shell.Current.DisplayAlert("Info", "Checkout", "OK");
         }
     }
 }

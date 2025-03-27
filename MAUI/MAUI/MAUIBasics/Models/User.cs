@@ -11,7 +11,7 @@ namespace MAUIBasics
         public string Name { get; set; }
 
         [Required]
-        [EmailAddress] // Validierung der E-Mail-Formatierung
+        //[EmailAddress] // Validierung der E-Mail-Formatierung
         public string Email { get; set; }
 
         [Required]

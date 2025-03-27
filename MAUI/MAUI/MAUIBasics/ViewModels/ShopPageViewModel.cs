@@ -49,11 +49,18 @@ namespace MAUIBasics.ViewModels
             Task.Run(async () => await Task.WhenAll(LoadArticlesAsync()));
         }
 
+        [RelayCommand]
+        private async Task NavigateToCart()
+        {
+            //await Shell.Current.DisplayAlert("Info", "Test", "OK");
+            await Shell.Current.GoToAsync("//CartPage");
+        }
+
         // Artikel in den lokalen Warenkorb speichern
         [RelayCommand]
         private async Task AddToCartAsync(Article selectedArticle)
         {
-            await Shell.Current.DisplayAlert("Info", "Artikel hinzugefügt", "OK");
+            //await Shell.Current.DisplayAlert("Info", "Artikel hinzugefügt", "OK");
             
             if (!_userService.IsLoggedIn)
             {
@@ -80,7 +87,7 @@ namespace MAUIBasics.ViewModels
             }
         }
 
-  
+
 
         // API-Artikel abrufen
         private async Task LoadArticlesAsync()
@@ -102,11 +109,16 @@ namespace MAUIBasics.ViewModels
                     await Shell.Current.DisplayAlert("Fehler", "Fehler beim Laden der Artikel.", "OK");
                 }
             }
+            catch (HttpRequestException)
+            {
+                await Shell.Current.DisplayAlert("Netzwerkfehler", "Keine Verbindung zum Onlineshop. Bitte überprüfen Sie Ihre Internetverbindung.", "OK");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] LoadArticlesAsync: {ex.Message}");
                 await Shell.Current.DisplayAlert("Fehler", $"Ein Fehler ist aufgetreten: {ex.Message}", "OK");
             }
         }
+
     }
 }

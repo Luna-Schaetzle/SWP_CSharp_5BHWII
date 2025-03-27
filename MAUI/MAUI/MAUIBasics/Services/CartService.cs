@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using MAUIBasics.Models;
+using SQLitePCL;
 
 namespace MAUIBasics.Services
 {
@@ -16,50 +17,52 @@ namespace MAUIBasics.Services
         public CartService()
         {
             Cart = new ObservableCollection<CartItem>();
-            LoadCartAsync();
+            //LoadCartAsync().Wait();
         }
 
+        
+
         // Warenkorb aus JSON-Datei oder Preferences laden
-        public async Task LoadCartAsync()
+        public async Task LoadCartAsync(User user)
         {
             try
             {
-                if (File.Exists(CartFilePath))
-                {
-                    string json = await File.ReadAllTextAsync(CartFilePath);
-                    var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
+            if (File.Exists(CartFilePath))
+            {
+                string json = await File.ReadAllTextAsync(CartFilePath);
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
 
-                    if (cartItems != null)
-                    {
-                        Cart.Clear();
-                        foreach (var item in cartItems)
-                        {
-                            Cart.Add(item);
-                        }
-                    }
-                }
-                else
+                if (cartItems != null)
                 {
-                    // Falls keine Datei existiert, alten Stand aus Preferences laden
-                    string json = Preferences.Get("CartData", string.Empty);
-                    if (!string.IsNullOrEmpty(json))
+                Cart.Clear();
+                foreach (var item in cartItems.Where(c => c.user.Id == user.Id))
+                {
+                    Cart.Add(item);
+                }
+                }
+            }
+            else
+            {
+                // Falls keine Datei existiert, alten Stand aus Preferences laden
+                string json = Preferences.Get("CartData", string.Empty);
+                if (!string.IsNullOrEmpty(json))
+                {
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
+                if (cartItems != null)
+                {
+                    Cart.Clear();
+                    foreach (var item in cartItems.Where(c => c.user.Id == user.Id))
                     {
-                        var cartItems = JsonSerializer.Deserialize<List<CartItem>>(json);
-                        if (cartItems != null)
-                        {
-                            Cart.Clear();
-                            foreach (var item in cartItems)
-                            {
-                                Cart.Add(item);
-                            }
-                        }
+                    Cart.Add(item);
                     }
                 }
+                }
+            }
             }
             catch
             {
-                // Fehlerhafte Daten oder Datei nicht gefunden -> Warenkorb zurücksetzen
-                Cart.Clear();
+            // Fehlerhafte Daten oder Datei nicht gefunden -> Warenkorb zurücksetzen
+            Cart.Clear();
             }
         }
 
@@ -88,22 +91,15 @@ namespace MAUIBasics.Services
         // Artikel aus dem Warenkorb entfernen
         public async Task RemoveFromCartAsync(CartItem cartItem)
         {
-            var item = Cart.FirstOrDefault(c => c.CartItemId == cartItem.CartItemId);
-            if (item == null) return;
+            //var item = Cart.FirstOrDefault(c => c.CartItemId == cartItem.CartItemId);
+            //if (item == null) return;
 
-            if (item.Quantity > 1)
-            {
-                item.Quantity -= 1;
-            }
-            else
-            {
-                Cart.Remove(item);
-            }
+            Cart.Remove(cartItem);
 
             await SaveCartAsync();
         }
 
-        // 🗑️ Warenkorb leeren
+
         public async Task ClearCartAsync()
         {
             Cart.Clear();
@@ -127,6 +123,16 @@ namespace MAUIBasics.Services
             {
                 // Fehler beim Speichern
             }
+        }
+
+        public async Task UpdateQuantityAsync(CartItem cartItem)
+        {
+            var item = Cart.FirstOrDefault(c => c.CartItemId == cartItem.CartItemId);
+            if (item == null) return;
+
+            item.Quantity = cartItem.Quantity;
+
+            await SaveCartAsync();
         }
     }
 }

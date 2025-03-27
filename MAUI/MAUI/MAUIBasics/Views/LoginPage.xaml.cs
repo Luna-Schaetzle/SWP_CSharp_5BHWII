@@ -1,8 +1,11 @@
-namespace MAUIBasics.Views;
 using MAUIBasics.ViewModels;
 
+
+namespace MAUIBasics.Views{
 public partial class LoginPage : ContentPage
 {
+
+
 	public LoginPage(LoginPageViewModels vm)
 	{
 		InitializeComponent();
@@ -10,4 +13,5 @@ public partial class LoginPage : ContentPage
     }
 
 
+}
 }

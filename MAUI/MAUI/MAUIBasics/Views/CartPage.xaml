@@ -3,63 +3,129 @@
              xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              x:Class="MAUIBasics.Views.CartPage"
              Title="Warenkorb"
-             x:Name="Page">
+             x:Name="Page"
+             BackgroundColor="#F5F5F5">
 
     <!--ContentPage.BindingContext>
         <vm:CartPageViewModel />
     </ContentPage.BindingContext-->
 
     <ContentPage.Content>
-        <Label Text="{Binding Username}"></Label>
-        <!--StackLayout Padding="10">
+        <StackLayout Padding="20" Spacing="10">
+            <!-- Header -->
             <Label Text="{Binding Username, StringFormat='Warenkorb von: {0}!'}"
-                   FontSize="24"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#333333"
                    HorizontalOptions="Center"
-                   Margin="0,10,0,20" />
+                   Margin="0,20,0,30" />
 
+            <!-- Cart Items -->
             <CollectionView ItemsSource="{Binding Cart}"
-                            SelectionMode="None">
+                            SelectionMode="None"
+                            BackgroundColor="Transparent"
+                            x:Name="collectionView">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BorderColor="LightGray"
-                               CornerRadius="10"
-                               Padding="10"
-                               Margin="5"
-                               HasShadow="True">
-                            <StackLayout Orientation="Horizontal" Spacing="10">
-                                <Image Source="{Binding article.ImageUrl}"
-                                       Aspect="AspectFill"
-                                       HeightRequest="100"
-                                       WidthRequest="100" />
-                                <StackLayout VerticalOptions="CenterAndExpand" Spacing="5">
-                                    <Label Text="{Binding article.Name}"
+                        <Frame BorderColor="#E0E0E0"
+                               CornerRadius="15"
+                               Padding="15"
+                               Margin="0,5"
+                               HasShadow="True"
+                               BackgroundColor="White">
+                            <StackLayout Orientation="Horizontal" Spacing="15">
+                                <!-- Article Details -->
+                                <StackLayout VerticalOptions="Center" Spacing="5">
+                                    <Label Text="{Binding Article.Name}"
                                            FontAttributes="Bold"
-                                           FontSize="18" />
-                                    <Label Text="{Binding article.Price, StringFormat='Preis: {0:C}'}"
-                                           FontSize="16" />
-                                    <Button Text="Entfernen"
-                                            BackgroundColor="Red"
-                                            TextColor="White"
-                                            Command="{Binding BindingContext.RemoveFromCartCommand, Source={x:Reference Page}}"
-                                            CommandParameter="{Binding .}" />
+                                           FontSize="18"
+                                           TextColor="#444444" />
+                                    <Label Text="{Binding Article.Price, StringFormat='Preis: {0:C}'}"
+                                           FontSize="16"
+                                           TextColor="#666666" />
                                 </StackLayout>
+
+                                <!-- Quantity Picker -->
+                                <Entry
+                                    Text="{Binding Quantity, Mode=TwoWay}"
+                                    Keyboard="Numeric"
+                                    WidthRequest="50"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    TextColor="#333333"
+                                    FontSize="16"
+                                    BackgroundColor="#F5F5F5"
+                                    
+                                     />
+
+
+                                    <!-- Update Quantity Button -->
+
+                                <Button Text="Aktualisieren"
+                                    BackgroundColor="#FF6B6B"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    FontAttributes="Bold"
+                                    Padding="15,5"
+                                    Command="{Binding Path=BindingContext.UpdateQuantityCommand,Source={Reference collectionView}}"
+                                    CommandParameter="{Binding .}" />
+                                    
+                                    
+
+                                <!-- Remove Button -->
+                                <Button Text="Entfernen"
+                                        BackgroundColor="#FF6B6B"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        FontAttributes="Bold"
+                                        Padding="15,5"
+                                        Command="{Binding Path=BindingContext.RemoveFromCartCommand,Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                        CommandParameter="{Binding .}" />
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <!-- Total Price -->
             <Label Text="{Binding TotalPrice, StringFormat='Gesamtsumme: {0:C}'}"
-                   FontSize="20"
+                   FontSize="22"
                    FontAttributes="Bold"
+                   TextColor="#333333"
                    HorizontalOptions="End"
-                   Margin="0,10,0,0" />
+                   Margin="0,20,0,10" />
 
-            <Button Text="Warenkorb leeren"
-                    BackgroundColor="Gray"
+            <!-- Calculate Total Price Button -->
+            <Button Text="Gesamtsumme berechnen"
+                    BackgroundColor="#FF6B6B"
                     TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Padding="20,10"
+                    Command="{Binding CalculateTotalPriceButtonCommand}" />
+            
+            <!-- Clear Cart Button -->
+            <Button Text="Warenkorb leeren"
+                    BackgroundColor="#FF6B6B"
+                    
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Padding="20,10"
                     Command="{Binding ClearCartCommand}"
-                    Margin="0,10,0,0" />
-        </StackLayout-->
+                    Margin="0,20,0,0" />
+
+            <!-- Checkout Button -->
+            <Button Text="Zur Kasse gehen"
+                    BackgroundColor="#FF6B6B"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Padding="20,10"
+                    Command="{Binding CheckoutCommand}"
+                    Margin="0,20,0,0" />
+                    
+
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

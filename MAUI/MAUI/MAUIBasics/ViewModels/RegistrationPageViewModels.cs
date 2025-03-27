@@ -6,6 +6,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MAUIBasics.Models;
 using Microsoft.Maui.Controls;
+using MAUIBasics.Services;
+
 
 namespace MAUIBasics.ViewModels
 {
@@ -24,35 +26,35 @@ namespace MAUIBasics.ViewModels
 
         }
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _name;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _password;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private DateTime _birthdate;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _street;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _houseNumber;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _postalCode;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _city;
 
-        [NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveRegisterCommand))]
         [ObservableProperty]
         private string _email;
 
@@ -76,7 +78,7 @@ namespace MAUIBasics.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(ValidateRegistrationForm))]
-        public async Task SaveRegisterAsync()
+        public async Task SaveRegister()
         {
             try
             {

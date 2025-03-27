@@ -1,77 +1,86 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MAUIBasics.ViewModels"
              x:Class="MAUIBasics.Views.ShopPage"
-             Title="ShopPage">
-
-    <!--ContentPage.BindingContext>
-        <vm:ShopPageViewModel/>
-    </ContentPage.BindingContext-->
+             Title="Shop"
+             BackgroundColor="#F5F5F5">
 
     <ContentPage.Content>
-        <StackLayout Padding="10">
+        <StackLayout Padding="20" Spacing="10">
+            <!-- Header -->
             <Label Text="Artikelübersicht"
-                   FontSize="24"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#333333"
                    HorizontalOptions="Center"
-                   Margin="0,10,0,20"/>
+                   Margin="0,20,0,30" />
 
             <!-- Navigationsbutton zum Warenkorb -->
             <Button Text="Warenkorb ansehen"
-                    BackgroundColor="Orange"
+                    BackgroundColor="#FF6B6B"
                     TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Padding="20,10"
                     Command="{Binding NavigateToCartCommand}"
-                    Margin="0,0,0,10"/>
+                    Margin="0,0,0,20" />
 
+            <!-- Artikel-Carousel -->
             <CarouselView ItemsSource="{Binding Articles}"
                           HeightRequest="400"
-                          IndicatorView="indicatorView">
+                          IndicatorView="indicatorView"
+                          x:Name="carouselView"
+                          BackgroundColor="Transparent">
 
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BorderColor="LightGray"
-                               CornerRadius="10"
-                               Padding="10"
-                               Margin="5"
-                               HasShadow="True">
-                            <StackLayout>
+                        <Frame BorderColor="#E0E0E0"
+                               CornerRadius="15"
+                               Padding="20"
+                               Margin="10"
+                               HasShadow="True"
+                               BackgroundColor="White">
+                            <StackLayout Spacing="10">
+                                <!-- Artikelname -->
                                 <Label Text="{Binding Name}"
                                        FontAttributes="Bold"
-                                       FontSize="18"
-                                       HorizontalOptions="Center"/>
-                                <!--Image Source="{Binding ImageUrl}" 
-                                       Aspect="AspectFill" 
-                                       HeightRequest="200"
-                                       Margin="0,10,0,10"/-->
-                                <Label Text="{Binding Email}"
-                                       FontAttributes="Bold"
-                                       FontSize="18"
-                                       HorizontalOptions="Center"/>
+                                       FontSize="22"
+                                       TextColor="#444444"
+                                       HorizontalOptions="Center" />
 
+                                <!-- Preis -->
                                 <Label Text="{Binding Price, StringFormat='Preis: {0:C}'}"
-                                       FontSize="16"/>
+                                       FontSize="18"
+                                       TextColor="#666666"
+                                       HorizontalOptions="Center" />
+
+                                <!-- Veröffentlichungsdatum -->
                                 <Label Text="{Binding ReleaseDate, StringFormat='Veröffentlicht am: {0:dd.MM.yyyy}'}"
                                        FontSize="14"
-                                       TextColor="Gray"/>
-                                <!-- Hinzugefügter Button -->
-                                <Button Text="Zum Warenkorb Hinzufügen"
-                                        Command="{Binding AddToCartAsyncCommand}"
-                                        BackgroundColor="Green"
-                                        TextColor="White"
-                                        CommandParameter="{Binding .}"
-                                        Margin="0,10,0,0"/> 
+                                       TextColor="#999999"
+                                       HorizontalOptions="Center" />
 
+                                <!-- Button zum Hinzufügen zum Warenkorb -->
+                                <Button Text="Zum Warenkorb hinzufügen"
+                                        BackgroundColor="#4CAF50"
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        Padding="15,10"
+                                        Command="{Binding Path=BindingContext.AddToCartCommand, Source={Reference carouselView}}"
+                                        CommandParameter="{Binding .}"
+                                        Margin="0,20,0,0" />
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
             </CarouselView>
 
-            <!--Indikator für CarouselView -->
+            <!-- Indikator für CarouselView -->
             <IndicatorView x:Name="indicatorView"
                            IndicatorColor="LightGray"
-                           SelectedIndicatorColor="DarkGray"
-                           Margin="0,10,0,0"/>
+                           SelectedIndicatorColor="#FF6B6B"
+                           Margin="0,20,0,0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

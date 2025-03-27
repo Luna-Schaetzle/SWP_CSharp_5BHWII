@@ -32,7 +32,7 @@
                 TextColor="White" 
                 CornerRadius="5" 
                 HorizontalOptions="FillAndExpand"/>
-       <Button Text="Reset"
+        <Button Text="Reset"
                      Command="{Binding ResetLoginFormCommand}" 
                      BackgroundColor="#007AFF" 
                      TextColor="White" 
